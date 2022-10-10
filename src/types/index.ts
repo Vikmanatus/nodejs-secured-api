@@ -1,3 +1,5 @@
+import { Response } from 'express';
+
 export enum ROUTER_ENDPOINTS {
   AUTH = '/api/auth',
 }
@@ -17,7 +19,7 @@ export enum MATCH_ENDPOINTS {
   MATCH_API_ROOT_ENDPOINT = AUTHORIZED_ENDPOINTS.API_ROOT_ENDPOINT,
   MATCH_SIGNUP_ENDPOINT = ROUTER_ENDPOINTS.AUTH + AUTHORIZED_ENDPOINTS.SIGNUP_ENDPOINT,
   MATCH_AUTHORIZATION_ENDPOINT = ROUTER_ENDPOINTS.AUTH + AUTHORIZED_ENDPOINTS.AUTHORIZATION_ENDPOINT,
-  MATCH_AUTH_ROOT_ENDPOINT= ROUTER_ENDPOINTS.AUTH
+  MATCH_AUTH_ROOT_ENDPOINT = ROUTER_ENDPOINTS.AUTH,
 }
 
 export type PermissionObjectType = {
@@ -28,6 +30,18 @@ export type PermissionObjectType = {
 export type PermissionConfigType = {
   home: PermissionObjectType;
   authorizationUrl: PermissionObjectType;
-  authRoot: PermissionObjectType
+  authRoot: PermissionObjectType;
 };
 
+
+// Source: https://stackoverflow.com/questions/62736335/typescript-and-express-js-change-res-json-response-type
+export interface BasicJsonResponse {
+  message: string;
+  success: boolean;
+}
+
+export type Send<T = Response> = (body?: BasicJsonResponse) => T;
+
+export interface TypedResponse extends Response {
+  json: Send<this>;
+}
