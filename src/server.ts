@@ -1,6 +1,7 @@
+import 'module-alias/register'
 import express from 'express';
 import morgan from 'morgan';
-import { PORT } from './config';
+import { PORT } from '@/config';
 
 const app = express();
 
