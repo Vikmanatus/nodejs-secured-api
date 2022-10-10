@@ -33,6 +33,6 @@
     "module-alias": "^2.2.2"
   },
   "_moduleAliases": {
-    "@": "build"
+    "@": "build/src"
   }
 }
