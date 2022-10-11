@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import {
+  AuthorizationRequestPayload,
   AUTHORIZED_ENDPOINTS,
   AUTHORIZED_ROLES,
   CONTENT_TYPES,
@@ -65,6 +66,10 @@ export const postmanConfig: PostmanConfigType = {
       postmanFormType: POSTMAN_FORM_TYPES.RAW,
       type: REQUEST_TYPES.POST,
       contentType: CONTENT_TYPES.JSON,
+      data: <AuthorizationRequestPayload>{
+        email: 'test@gmail.com',
+        password: 'fake_pswd_from_config',
+      },
     },
     requestName: 'Obtain token',
   },

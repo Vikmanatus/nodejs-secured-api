@@ -58,11 +58,13 @@ export enum POSTMAN_FORM_TYPES {
 /**
  * Type used to define what request types and which postman form type string is required for the automatic postman collection configuration
  */
-export type PostmanRequestInformationType = {
+
+export interface PostmanRequestInformationType<T=unknown>  {
   type: REQUEST_TYPES;
   postmanFormType: POSTMAN_FORM_TYPES;
   contentType?: CONTENT_TYPES;
-};
+  data?: T
+}
 
 /**
  * This type defines the different values used in our permission config objects
@@ -116,13 +118,25 @@ export interface BasicJsonResponse {
   success: boolean;
 }
 
+/**
+ * Body payload for requesting Authorization token
+ */
 export interface AuthorizationRequestPayload {
   email: string;
   password: string;
 }
 
+/**
+ * Body of the reponse when successfully retrieving Authorization token 
+ */
+export interface AuthorizationRequestionSuccessReponse {
+  token: string;
+}
+/**
+ * Body payload for Authorization token API reponse
+ */
 export interface AuthorizationRequestResponse extends BasicJsonResponse {
-  data?: AuthorizationRequestPayload;
+  data?: AuthorizationRequestionSuccessReponse;
 }
 
 /**
@@ -139,7 +153,7 @@ export interface TypedResponse<Type> extends Response {
 }
 
 export interface TypedRequestBody<Type> extends Request {
-  body: Type
+  body: Type;
 }
 /**
  * This enum represents the different content-type used for our Postman configuration file and our Jest test's

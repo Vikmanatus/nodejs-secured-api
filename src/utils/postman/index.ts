@@ -23,10 +23,10 @@ const generatePostmanBody = (element: PostmanObjectConfigType): RequestBodyDefin
     };
     return requestBodyDef;
   }
-  if (element.requestInformation.postmanFormType === POSTMAN_FORM_TYPES.RAW) {
+  if (element.requestInformation.postmanFormType === POSTMAN_FORM_TYPES.RAW && element.requestInformation.data) {
     const requestBodyDef: RequestBodyDefinition = {
       mode: element.requestInformation.postmanFormType.toString(),
-      raw: JSON.stringify({ email: 'John_Doe@gmail.com', password: 'Some fake pswd' }),
+      raw: JSON.stringify(element.requestInformation.data),
     };
     return requestBodyDef;
   }

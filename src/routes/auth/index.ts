@@ -28,7 +28,7 @@ authRouter.post(
     return res.status(201).json({
       message: 'Successfully fetched token',
       success: true,
-      data: { email: req.body.email, password: req.body.password },
+      data: { token: 'Secret token' },
     });
   },
 );
