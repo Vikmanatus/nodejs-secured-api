@@ -1,5 +1,5 @@
-import { AUTHORIZED_ENDPOINTS, AUTHORIZED_ROLES, MATCH_ENDPOINTS, PermissionConfigType } from '@/types';
 import dotenv from 'dotenv';
+import { AUTHORIZED_ENDPOINTS, AUTHORIZED_ROLES, MATCH_ENDPOINTS, PermissionConfigType } from '@/types';
 
 dotenv.config({
   path: '.env',
@@ -26,6 +26,10 @@ export const permissionConfig: PermissionConfigType = {
 };
 export const POSTMAN_PROJECT_NAME="nodejs-secured-api"
 
+export type PostmanConfigObjectType = {
+  isAuthRequired: boolean;
+
+}
 export const postmanConfig = {
 
 }

@@ -1,6 +1,7 @@
-import { POSTMAN_PROJECT_NAME } from '@/config';
 import fs from 'fs';
-import { Collection, Item, Header } from 'postman-collection';
+import { POSTMAN_PROJECT_NAME } from '@/config';
+import { Collection, Item, Header, } from 'postman-collection';
+
 export const generatePostmanCollection = (): void => {
   const postmanCollection = new Collection({
     info: {
@@ -15,4 +16,5 @@ export const generatePostmanCollection = (): void => {
   // const rawHeaderString = 'Authorization:\nContent-Type:\ncache-control:no-cache\n';
   // Parsing string to postman compatible format
   const rawHeaders = Header.parse(rawHeaderString);
+
 };
