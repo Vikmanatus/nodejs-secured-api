@@ -34,10 +34,19 @@ yarn lint
 
 Sometimes maintining Postman collection up to date can become really painful... This project comes with an automated script to generate all the Postman collection
 
-<!-- Please open a terminal and run the following command:
+The `postmanConfig` object located at `@/src/config/index.ts` must be kept up to date with your API in order to generate the config file correctly
+
+
+Please open a terminal and run the following command:
 
 ```bash
-``` -->
+yarn generate-postman-collection
+```
+
+You will see a `collection.json` file created at the root of the project. 
+
+You simply have to import it in the Postman appmliation, and then you will be ready to test your API on Postman 🚀
+
 ## 🗒 Notes
 
 - [Used to fix absolute paths imports](https://dev.to/dotorimook/using-absolute-path-import-with-typescript-babel-nodemon-in-your-node-project-ha7#comment-h6p0)
