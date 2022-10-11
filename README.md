@@ -46,7 +46,7 @@ yarn generate-postman-collection
 
 You will see a `collection.json` file created at the root of the project.
 
-You simply have to import it in the Postman appmliation, and then you will be ready to test your API on Postman 🚀
+You simply have to import it in the Postman application, and then you will be ready to test your API on Postman 🚀
 
 ## 🗒 Notes
 
