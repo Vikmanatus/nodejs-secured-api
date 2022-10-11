@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import { authRouter } from '@/routes';
 import { TypedResponse, ROUTER_ENDPOINTS } from '@/types';
 import { permissionConfig } from './config';
+import { generatePostmanCollection } from './utils/postman';
 
 /**
  * Global express application
@@ -30,6 +31,7 @@ app.use(ROUTER_ENDPOINTS.AUTH, authRouter);
  * Root API home
  */
 app.get(permissionConfig.home.url, (_req: Request, res: TypedResponse) => {
+  generatePostmanCollection();
   return res.status(200).json({ message: 'Welcolme to nodejs-secured-api', success: true });
 });
 

@@ -18,6 +18,8 @@ dotenv.config({
  */
 export const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
+export const API_URL: string = process.env.API_URL ? process.env.API_URL : `http://localhost:${PORT}`
+
 /**
  * This object is used to configure our project
  * We define the URL of the endpoint, the authroized roles and the match URL passed
