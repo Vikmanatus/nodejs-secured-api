@@ -58,7 +58,11 @@ export enum POSTMAN_FORM_TYPES {
 /**
  * Type used to define what request types and which postman form type string is required for the automatic postman collection configuration
  */
-export type PostmanRequestInformationType = { type: REQUEST_TYPES; postmanFormType: POSTMAN_FORM_TYPES,contentType?: CONTENT_TYPES; };
+export type PostmanRequestInformationType = {
+  type: REQUEST_TYPES;
+  postmanFormType: POSTMAN_FORM_TYPES;
+  contentType?: CONTENT_TYPES;
+};
 
 /**
  * This type defines the different values used in our permission config objects
@@ -90,7 +94,7 @@ export type PostmanAddtionalConfigObjectType = {
   requestName: string;
 };
 
-/** 
+/**
  * Define the required information for each element of the PostmanConfigType
  */
 export type PostmanObjectConfigType = PermissionObjectType & PostmanAddtionalConfigObjectType;
@@ -105,24 +109,32 @@ export interface PostmanConfigType extends PermissionConfigType {
 }
 
 /**
- * This interface represents the schema used in many requests where we don't need to send data
+ * This interface represents the basic schema used in many requests where we don't need to send data
  */
 export interface BasicJsonResponse {
   message: string;
   success: boolean;
 }
 
+export interface AuthorizationRequestPayload {
+  email: string;
+  password: string;
+}
+
+export interface AuthorizationRequestResponse extends BasicJsonResponse {
+  data: AuthorizationRequestPayload;
+}
 /**
  * This type will be used to override the body defined in the Express json() method
  */
-export type Send<T = Response> = (body?: BasicJsonResponse) => T;
+export type Send<Type, T = Response> = (body?: Type) => T;
 
 /**
  * This interface is used to type the body of the arguments passed in the Express json() method
  * Source: https://stackoverflow.com/questions/62736335/typescript-and-express-js-change-res-json-response-type
  */
-export interface TypedResponse extends Response {
-  json: Send<this>;
+export interface TypedResponse<Type> extends Response {
+  json: Send<Type, this>;
 }
 
 /**
