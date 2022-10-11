@@ -1,0 +1,59 @@
+{
+  "item": [
+    {
+      "id": "a072586c-32cd-40be-92c3-1a1126f96b59",
+      "name": "Trigger local endpoint",
+      "request": {
+        "url": { "protocol": "http", "port": "5050", "path": [""], "host": ["localhost"], "query": [], "variable": [] },
+        "method": "GET",
+        "body": { "mode": "raw", "raw": "" }
+      },
+      "response": [],
+      "event": []
+    },
+    {
+      "id": "a481e8cd-6e16-4ef9-a260-8ca68cd44f0a",
+      "name": "Obtain token",
+      "request": {
+        "url": {
+          "protocol": "http",
+          "port": "5050",
+          "path": ["api", "auth", "oauth", "token"],
+          "host": ["localhost"],
+          "query": [],
+          "variable": []
+        },
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "method": "POST",
+        "body": { "mode": "raw", "raw": "{\"email\":\"John_Doe@gmail.com\",\"password\":\"Some fake pswd\"}" }
+      },
+      "response": [],
+      "event": []
+    },
+    {
+      "id": "4cdd636a-2d55-4a81-bceb-e44b54c20130",
+      "name": "Trigger auth root endpoint",
+      "request": {
+        "url": {
+          "protocol": "http",
+          "port": "5050",
+          "path": ["api", "auth"],
+          "host": ["localhost"],
+          "query": [],
+          "variable": []
+        },
+        "method": "GET",
+        "body": { "mode": "raw", "raw": "" }
+      },
+      "response": [],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [],
+  "info": {
+    "_postman_id": "20cd28f0-1974-46aa-a657-ac5cb2a2cd7a",
+    "name": "nodejs-secured-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  }
+}

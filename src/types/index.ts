@@ -58,7 +58,7 @@ export enum POSTMAN_FORM_TYPES {
 /**
  * Type used to define what request types and which postman form type string is required for the automatic postman collection configuration
  */
-export type PostmanRequestInformationType = { type: REQUEST_TYPES; postmanFormType: POSTMAN_FORM_TYPES };
+export type PostmanRequestInformationType = { type: REQUEST_TYPES; postmanFormType: POSTMAN_FORM_TYPES,contentType?: CONTENT_TYPES; };
 
 /**
  * This type defines the different values used in our permission config objects
@@ -87,7 +87,6 @@ export type PermissionConfigType = {
 export type PostmanAddtionalConfigObjectType = {
   isAuthRequired: boolean;
   requestInformation: PostmanRequestInformationType;
-  contentType?: CONTENT_TYPES;
   requestName: string;
 };
 
@@ -133,5 +132,5 @@ export enum CONTENT_TYPES {
   JSON = 'application/json',
   FILES = 'multipart/form-data',
   URL_ENCODED = 'application/x-www-form-urlencoded',
-  KEY = 'Content-Type:',
+  KEY = 'Content-Type',
 }

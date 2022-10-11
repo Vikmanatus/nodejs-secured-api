@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import {
   AUTHORIZED_ENDPOINTS,
   AUTHORIZED_ROLES,
+  CONTENT_TYPES,
   MATCH_ENDPOINTS,
   PermissionConfigType,
   PostmanConfigType,
@@ -18,7 +19,7 @@ dotenv.config({
  */
 export const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
-export const API_URL: string = process.env.API_URL ? process.env.API_URL : `http://localhost:${PORT}`
+export const API_URL: string = process.env.API_URL ? process.env.API_URL : `http://localhost:${PORT}`;
 
 /**
  * This object is used to configure our project
@@ -60,7 +61,11 @@ export const postmanConfig: PostmanConfigType = {
   authorizationUrl: {
     ...permissionConfig.authorizationUrl,
     isAuthRequired: false,
-    requestInformation: { postmanFormType: POSTMAN_FORM_TYPES.RAW, type: REQUEST_TYPES.POST },
+    requestInformation: {
+      postmanFormType: POSTMAN_FORM_TYPES.RAW,
+      type: REQUEST_TYPES.POST,
+      contentType: CONTENT_TYPES.JSON,
+    },
     requestName: 'Obtain token',
   },
   authRoot: {
