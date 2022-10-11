@@ -8,7 +8,7 @@ Please open a terminal and run the following command:
 yarn install
 ```
 
-## 🖥 Run project
+## 🖥 Run the project
 
 Please open a first terminal and run the following command:
 
