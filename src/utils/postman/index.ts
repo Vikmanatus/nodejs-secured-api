@@ -57,9 +57,8 @@ export const generatePostmanCollection = (): void => {
   });
 
   const postmanConfigObject: PostmanObjectConfigType[] = Object.values(postmanConfig);
-  console.log(postmanConfigObject);
+
   postmanConfigObject.map((element) => {
-    console.log({ element });
     const postmanRequest = new Item({
       name: element.requestName,
       request: {
@@ -71,11 +70,13 @@ export const generatePostmanCollection = (): void => {
     });
     postmanCollection.items.add(postmanRequest);
   });
+
   const collectionJSON = postmanCollection.toJSON();
+
   fs.writeFile('./collection.json', JSON.stringify(collectionJSON), (err) => {
     if (err) {
       throw Error(err.message);
     }
-    console.log('File saved');
+    console.log('Postman collection configuration successfully created !');
   });
 };
