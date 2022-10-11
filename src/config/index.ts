@@ -24,3 +24,8 @@ export const permissionConfig: PermissionConfigType = {
     matchUrl: MATCH_ENDPOINTS.MATCH_API_ROOT_ENDPOINT,
   },
 };
+export const POSTMAN_PROJECT_NAME="nodejs-secured-api"
+
+export const postmanConfig = {
+
+}
