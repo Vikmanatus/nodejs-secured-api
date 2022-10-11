@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 /**
  * This enum represents the different API endpoints decorators passes to express in app.ts file
@@ -122,21 +122,25 @@ export interface AuthorizationRequestPayload {
 }
 
 export interface AuthorizationRequestResponse extends BasicJsonResponse {
-  data: AuthorizationRequestPayload;
+  data?: AuthorizationRequestPayload;
 }
+
 /**
  * This type will be used to override the body defined in the Express json() method
  */
-export type Send<Type, T = Response> = (body?: Type) => T;
+export type SetTypedResponse<Type, T = Response> = (body?: Type) => T;
 
 /**
  * This interface is used to type the body of the arguments passed in the Express json() method
  * Source: https://stackoverflow.com/questions/62736335/typescript-and-express-js-change-res-json-response-type
  */
 export interface TypedResponse<Type> extends Response {
-  json: Send<Type, this>;
+  json: SetTypedResponse<Type, this>;
 }
 
+export interface TypedRequestBody<Type> extends Request {
+  body: Type
+}
 /**
  * This enum represents the different content-type used for our Postman configuration file and our Jest test's
  */

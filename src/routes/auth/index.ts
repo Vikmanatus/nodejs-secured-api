@@ -1,5 +1,11 @@
 import { permissionConfig } from '@/config';
-import { AuthorizationRequestResponse, BasicJsonResponse, TypedResponse } from '@/types';
+import {
+  AuthorizationRequestPayload,
+  AuthorizationRequestResponse,
+  BasicJsonResponse,
+  TypedRequestBody,
+  TypedResponse,
+} from '@/types';
 import express, { Request } from 'express';
 const authRouter = express.Router();
 
@@ -15,14 +21,15 @@ authRouter.get(permissionConfig.authRoot.url, (_req: Request, res: TypedResponse
  */
 authRouter.post(
   permissionConfig.authorizationUrl.url,
-  (req: Request, res: TypedResponse<AuthorizationRequestResponse>) => {
-    return res
-      .status(201)
-      .json({
-        message: 'Successfully fetched token',
-        success: true,
-        data: { email: req.body.email, password: req.body.password },
-      });
+  (req: TypedRequestBody<AuthorizationRequestPayload>, res: TypedResponse<AuthorizationRequestResponse>) => {
+    if (!req.body.email || !req.body.password) {
+      return res.status(400).json({ message: 'Invalide body request', success: false });
+    }
+    return res.status(201).json({
+      message: 'Successfully fetched token',
+      success: true,
+      data: { email: req.body.email, password: req.body.password },
+    });
   },
 );
 export default authRouter;
