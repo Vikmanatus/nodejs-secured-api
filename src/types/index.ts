@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { FormParamDefinition } from 'postman-collection';
 
 /**
  * This enum represents the different API endpoints decorators passes to express in app.ts file
@@ -56,8 +57,19 @@ export enum POSTMAN_FORM_TYPES {
   ENCODED = 'x-www-form-urlencoded',
   FILES = 'formdata',
   NONE = 'none',
+  FILE = 'file',
 }
 
+export interface UploadMediaInterface {
+  requestKey: string;
+  relativeFilePath: string;
+}
+
+export interface OverridePostmanFormDataInterface extends FormParamDefinition {
+  key: string;
+  type: POSTMAN_FORM_TYPES;
+  src: string;
+}
 /**
  * Type used to define what request types and which postman form type string is required for the automatic postman collection configuration
  */

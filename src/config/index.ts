@@ -9,6 +9,7 @@ import {
   PostmanConfigType,
   POSTMAN_FORM_TYPES,
   REQUEST_TYPES,
+  UploadMediaInterface,
 } from '@/types';
 import multer from 'multer';
 
@@ -99,6 +100,10 @@ export const postmanConfig: PostmanConfigType = {
       postmanFormType: POSTMAN_FORM_TYPES.FILES,
       type: REQUEST_TYPES.POST,
       contentType: CONTENT_TYPES.FILES,
+      data: <UploadMediaInterface>{
+        requestKey: 'upload-file',
+        relativeFilePath: '/images/saitama.jpeg',
+      },
     },
     requestName: 'Upload picture to Google Cloud Storage',
   },
