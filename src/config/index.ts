@@ -10,9 +10,17 @@ import {
   POSTMAN_FORM_TYPES,
   REQUEST_TYPES,
 } from '@/types';
+import multer from 'multer';
 
 dotenv.config({
   path: '.env',
+});
+
+export const Multer = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
 });
 
 /**
@@ -41,6 +49,11 @@ export const permissionConfig: PermissionConfigType = {
     url: AUTHORIZED_ENDPOINTS.API_ROOT_ENDPOINT,
     authorized_roles: [AUTHORIZED_ROLES.USER, AUTHORIZED_ROLES.ADMIN, AUTHORIZED_ROLES.SUPER_ADMIN],
     matchUrl: MATCH_ENDPOINTS.MATCH_AUTH_ROOT_ENDPOINT,
+  },
+  uploadMedias: {
+    url: AUTHORIZED_ENDPOINTS.UPLOAD_MEDIAS_ENDPOINT,
+    authorized_roles: [AUTHORIZED_ROLES.ADMIN, AUTHORIZED_ROLES.SUPER_ADMIN],
+    matchUrl: MATCH_ENDPOINTS.MATCH_UPLOAD_MEDIAS_ENDPOINT,
   },
 };
 
@@ -78,5 +91,15 @@ export const postmanConfig: PostmanConfigType = {
     isAuthRequired: false,
     requestInformation: { postmanFormType: POSTMAN_FORM_TYPES.NONE, type: REQUEST_TYPES.GET },
     requestName: 'Trigger auth root endpoint',
+  },
+  uploadMedias: {
+    ...permissionConfig.uploadMedias,
+    isAuthRequired: false,
+    requestInformation: {
+      postmanFormType: POSTMAN_FORM_TYPES.FILES,
+      type: REQUEST_TYPES.POST,
+      contentType: CONTENT_TYPES.FILES,
+    },
+    requestName: 'Upload picture to Google Cloud Storage',
   },
 };

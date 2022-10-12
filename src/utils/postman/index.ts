@@ -1,8 +1,8 @@
 import fs from 'fs';
 import { API_URL, postmanConfig, POSTMAN_PROJECT_NAME } from '@/config';
-import { Collection, Item, HeaderDefinition, RequestBodyDefinition } from 'postman-collection';
+import { Collection, Item, HeaderDefinition, RequestBodyDefinition,FormParamDefinition, RequestBody } from 'postman-collection';
 import { CONTENT_TYPES, PostmanObjectConfigType, POSTMAN_FORM_TYPES, REQUEST_TYPES } from '@/types';
-
+import path from 'path';
 const generateHeaders = (element: PostmanObjectConfigType): HeaderDefinition[] => {
   const headersArray: HeaderDefinition[] = [];
   if (element.isAuthRequired) {
@@ -33,7 +33,8 @@ const generatePostmanBody = (element: PostmanObjectConfigType): RequestBodyDefin
   if (element.requestInformation.postmanFormType === POSTMAN_FORM_TYPES.FILES) {
     const requestBodyDef: RequestBodyDefinition = {
       mode: element.requestInformation.postmanFormType.toString(),
-      file: { src: '/images/saitama.jpeg' },
+      file:{src: process.cwd()+"/images/saitama.jpeg"},
+      formdata: [{ key: 'upload-file', }],
     };
     return requestBodyDef;
   }
@@ -66,6 +67,7 @@ export const generatePostmanCollection = (): void => {
         url: `${API_URL}${element.matchUrl}`,
         method: element.requestInformation.type,
         body: generatePostmanBody(element),
+        
       },
     });
     postmanCollection.items.add(postmanRequest);

@@ -1,6 +1,6 @@
 import express, { Request } from 'express';
 import morgan from 'morgan';
-import { authRouter } from '@/routes';
+import { authRouter , mediasRouter} from '@/routes';
 import { TypedResponse, ROUTER_ENDPOINTS, BasicJsonResponse } from '@/types';
 import { permissionConfig } from './config';
 
@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
  * The different other endpoints used in our API
  */
 app.use(ROUTER_ENDPOINTS.AUTH, authRouter);
+app.use(ROUTER_ENDPOINTS.MEDIAS, mediasRouter)
 
 /**
  * Root API home

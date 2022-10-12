@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
  */
 export enum ROUTER_ENDPOINTS {
   AUTH = '/api/auth',
+  MEDIAS = '/api/medias',
 }
 
 /**
@@ -23,6 +24,7 @@ export enum AUTHORIZED_ENDPOINTS {
   API_ROOT_ENDPOINT = '/',
   SIGNUP_ENDPOINT = '/signup',
   AUTHORIZATION_ENDPOINT = '/oauth/token',
+  UPLOAD_MEDIAS_ENDPOINT = '/single-file/upload',
 }
 
 /**
@@ -34,6 +36,7 @@ export enum MATCH_ENDPOINTS {
   MATCH_SIGNUP_ENDPOINT = ROUTER_ENDPOINTS.AUTH + AUTHORIZED_ENDPOINTS.SIGNUP_ENDPOINT,
   MATCH_AUTHORIZATION_ENDPOINT = ROUTER_ENDPOINTS.AUTH + AUTHORIZED_ENDPOINTS.AUTHORIZATION_ENDPOINT,
   MATCH_AUTH_ROOT_ENDPOINT = ROUTER_ENDPOINTS.AUTH,
+  MATCH_UPLOAD_MEDIAS_ENDPOINT = ROUTER_ENDPOINTS.MEDIAS + AUTHORIZED_ENDPOINTS.UPLOAD_MEDIAS_ENDPOINT,
 }
 
 /**
@@ -51,7 +54,7 @@ export enum REQUEST_TYPES {
 export enum POSTMAN_FORM_TYPES {
   RAW = 'raw',
   ENCODED = 'x-www-form-urlencoded',
-  FILES = 'form-data',
+  FILES = 'formdata',
   NONE = 'none',
 }
 
@@ -59,11 +62,11 @@ export enum POSTMAN_FORM_TYPES {
  * Type used to define what request types and which postman form type string is required for the automatic postman collection configuration
  */
 
-export interface PostmanRequestInformationType<T=unknown>  {
+export interface PostmanRequestInformationType<T = unknown> {
   type: REQUEST_TYPES;
   postmanFormType: POSTMAN_FORM_TYPES;
   contentType?: CONTENT_TYPES;
-  data?: T
+  data?: T;
 }
 
 /**
@@ -85,6 +88,7 @@ export type PermissionConfigType = {
   home: PermissionObjectType;
   authorizationUrl: PermissionObjectType;
   authRoot: PermissionObjectType;
+  uploadMedias: PermissionObjectType;
 };
 
 /**
@@ -108,6 +112,7 @@ export interface PostmanConfigType extends PermissionConfigType {
   home: PostmanObjectConfigType;
   authorizationUrl: PostmanObjectConfigType;
   authRoot: PostmanObjectConfigType;
+  uploadMedias: PostmanObjectConfigType;
 }
 
 /**
@@ -127,7 +132,7 @@ export interface AuthorizationRequestPayload {
 }
 
 /**
- * Body of the reponse when successfully retrieving Authorization token 
+ * Body of the reponse when successfully retrieving Authorization token
  */
 export interface AuthorizationRequestionSuccessReponse {
   token: string;
