@@ -80,10 +80,10 @@ export const postmanConfig: PostmanConfigType = {
       postmanFormType: POSTMAN_FORM_TYPES.RAW,
       type: REQUEST_TYPES.POST,
       contentType: CONTENT_TYPES.JSON,
-      data: <AuthorizationRequestPayload>{
+      data: {
         email: 'test@gmail.com',
         password: 'fake_pswd_from_config',
-      },
+      } as AuthorizationRequestPayload,
     },
     requestName: 'Obtain token',
   },
@@ -100,10 +100,10 @@ export const postmanConfig: PostmanConfigType = {
       postmanFormType: POSTMAN_FORM_TYPES.FILES,
       type: REQUEST_TYPES.POST,
       contentType: CONTENT_TYPES.FILES,
-      data: <UploadMediaInterface>{
+      data: {
         requestKey: 'upload-file',
         relativeFilePath: '/images/saitama.jpeg',
-      },
+      } as UploadMediaInterface,
     },
     requestName: 'Upload picture to Google Cloud Storage',
   },
