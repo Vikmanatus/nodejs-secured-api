@@ -10,7 +10,7 @@ export const UsersSchema = {
 const modelName = "users"
 const schemaDefinition = UsersSchema;
 const schemaInstance = new mongoose.Schema(schemaDefinition);
-const modelInstance = mongoose.model(modelName, schemaInstance);
+export const UsersmodelInstance = mongoose.model(modelName, schemaInstance);
 
 // schemaInstance.virtual("password").set((password:string)=>{
 //     this.test =""
