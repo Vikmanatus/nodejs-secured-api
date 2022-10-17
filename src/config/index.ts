@@ -12,7 +12,11 @@ import {
   UploadMediaInterface,
 } from '@/types';
 import multer from 'multer';
+// import OAuth2Server from 'oauth2-server';
 
+// export const oauth = new OAuth2Server({
+//   model:
+// })
 dotenv.config({
   path: '.env',
 });
