@@ -13,11 +13,14 @@ import {
 } from '@/types';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import OAuth2Server, { Client, Falsey, Token } from 'oauth2-server';
+import OAuth2Server, { Client, Falsey, RefreshToken, Token, User } from 'oauth2-server';
 import { TokenModelInstance } from '@/models/token.models';
 import { ClientModelInstance } from '@/models/clients.models';
+import { UsersModelInstance } from '@/models/users.models';
 
 export const oauth = new OAuth2Server({
+  accessTokenLifetime: 180,
+  allowBearerTokensInQueryString: true,
   model: {
     getAccessToken(accessToken, _callback): Promise<Token | Falsey> {
       return new Promise((resolve, reject) => {
@@ -42,7 +45,78 @@ export const oauth = new OAuth2Server({
       });
     },
     saveToken(token, client, user, callback) {
+      token.client = {
+        id: client.clientId,
+        grants: client.grants,
+      };
 
+      token.user = {
+        username: user.username,
+        role: user.role,
+      };
+      return new Promise((resolve, reject) => {
+        const tokenInstance = new TokenModelInstance(token);
+        tokenInstance
+          .save()
+          .then((result) => {
+            resolve(result as unknown as Token);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    getUser(username, password, callback) {
+      return new Promise((resolve, reject) => {
+        UsersModelInstance.findOne({ username })
+          .then((result) => {
+            resolve(result as unknown as User);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    getUserFromClient(client, callback) {
+      return new Promise((resolve, reject) => {
+        ClientModelInstance.findOne({
+          clientId: client.clientId,
+          clientSecret: client.clientSecret,
+          grants: 'client_credentials',
+        })
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    getRefreshToken(refreshToken, callback) {
+      return new Promise((resolve, reject) => {
+        TokenModelInstance.findOne({ refreshToken: refreshToken })
+          .then((result) => {
+            resolve(result as unknown as RefreshToken);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    revokeToken(token, callback) {
+      return new Promise((resolve, reject) => {
+        TokenModelInstance.deleteOne({ refreshToken: token.refreshToken })
+          .then((result) => {
+            console.log({ result });
+            resolve(true);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    verifyScope(token, scope, callback) {
+      return Promise.resolve(true);
     },
   },
 });

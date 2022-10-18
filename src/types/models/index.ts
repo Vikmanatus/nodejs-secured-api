@@ -34,8 +34,8 @@ export interface TokenSchema {
   accessTokenExpiresAt: Date;
   refreshToken: string;
   refreshTokenExpiresAt: Date;
-  client: ClientTokenInfo;
-  user: UserTokenInfo;
+  client: { id: string };
+  user: { id: string };
 }
 
 export interface UserTokenInfo {
@@ -52,6 +52,6 @@ export interface TokenSchemaDefinition {
   accessTokenExpiresAt: DateConstructor;
   refreshToken: StringConstructor;
   refreshTokenExpiresAt: DateConstructor;
-  client: ClientsSchemaDefinition;
-  user: UsersSchemaDefinition;
+  client: { id: StringConstructor };
+  user: { id: StringConstructor };
 }

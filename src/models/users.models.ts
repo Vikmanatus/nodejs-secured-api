@@ -12,7 +12,7 @@ export const UsersSchemaDef: UsersSchemaDefinition = {
   salt: String,
 };
 export const UserSchemaInstance = new mongoose.Schema<UsersSchema>(UsersSchemaDef);
-export const UsersmodelInstance = mongoose.model<UsersSchema>(modelName, UserSchemaInstance);
+export const UsersModelInstance = mongoose.model<UsersSchema>(modelName, UserSchemaInstance);
 
 // schemaInstance.virtual("password").set((password:string)=>{
 //     this.test =""

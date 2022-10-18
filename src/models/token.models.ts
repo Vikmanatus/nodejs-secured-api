@@ -10,8 +10,8 @@ export const TokenSchemaDef: TokenSchemaDefinition = {
   accessTokenExpiresAt: Date,
   refreshToken: String,
   refreshTokenExpiresAt: Date,
-  client: ClientSchemaDef,
-  user: UsersSchemaDef,
+  client: { id: String },
+  user: { id: String },
 };
 
 export const TokenSchemaInstance = new mongoose.Schema<TokenSchema>(TokenSchemaDef);
