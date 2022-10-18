@@ -18,8 +18,16 @@ export interface ClientsSchema {
   id: string;
   clientId: string;
   clientSecret: string;
-  grants:{ type: AUTHORIZED_ROLES; default: AUTHORIZED_ROLES };
+  grants: { type: AUTHORIZED_ROLES; required: boolean };
   redirectUris: string[];
+}
+
+export interface ClientsSchemaDefinition {
+  id: StringConstructor;
+  clientId: StringConstructor;
+  clientSecret: StringConstructor;
+  grants: { type: AUTHORIZED_ROLES[]; required: BooleanConstructor };
+  redirectUris: StringConstructor[];
 }
 export interface TokenSchema {
   accessToken: string;
@@ -29,4 +37,3 @@ export interface TokenSchema {
   client: ClientsSchema;
   user: UsersSchema;
 }
-
