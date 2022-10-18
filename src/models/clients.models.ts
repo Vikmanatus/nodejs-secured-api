@@ -7,7 +7,7 @@ export const ClientSchemaDef: ClientsSchemaDefinition = {
   id: String,
   clientId: String,
   clientSecret: String,
-  grants: { type: Object.values(AUTHORIZED_ROLES), required: Boolean },
+  grants: { type: Object.values(AUTHORIZED_ROLES), required: true },
   redirectUris: [String],
 };
 export const ClientSchemaInstance = new mongoose.Schema<ClientsSchema>(ClientSchemaDef);

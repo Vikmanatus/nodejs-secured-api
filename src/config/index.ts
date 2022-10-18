@@ -13,11 +13,39 @@ import {
 } from '@/types';
 import multer from 'multer';
 import mongoose from 'mongoose';
-// import OAuth2Server from 'oauth2-server';
+import OAuth2Server, { Client, Falsey, Token } from 'oauth2-server';
+import { TokenModelInstance } from '@/models/token.models';
+import { ClientModelInstance } from '@/models/clients.models';
 
-// export const oauth = new OAuth2Server({
-//   model:
-// })
+export const oauth = new OAuth2Server({
+  model: {
+    getAccessToken(accessToken, _callback): Promise<Token | Falsey> {
+      return new Promise((resolve, reject) => {
+        TokenModelInstance.findOne({ accessToken })
+          .then((result) => {
+            resolve(result as unknown as Token);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    getClient(clientId, clientSecret, callback) {
+      return new Promise((resolve, reject) => {
+        ClientModelInstance.findOne({ clientId, clientSecret })
+          .then((result) => {
+            resolve(result as unknown as Client);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    saveToken(token, client, user, callback) {
+
+    },
+  },
+});
 dotenv.config({
   path: '.env',
 });

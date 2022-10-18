@@ -26,7 +26,7 @@ export interface ClientsSchemaDefinition {
   id: StringConstructor;
   clientId: StringConstructor;
   clientSecret: StringConstructor;
-  grants: { type: AUTHORIZED_ROLES[]; required: BooleanConstructor };
+  grants: { type: AUTHORIZED_ROLES[]; required: boolean };
   redirectUris: StringConstructor[];
 }
 export interface TokenSchema {
