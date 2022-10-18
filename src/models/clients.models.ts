@@ -1,6 +1,13 @@
 import { AUTHORIZED_ROLES } from '@/types';
 import mongoose from 'mongoose';
-// export type ClientsSchemaType = {
+// Need to have:
+// - A type
+// - A Schema
+// - A type for the Schema
+// An exportable schema
+// An exportable model
+
+// export type ClientsSchemaInterface = {
 //   id: string;
 //   clientId: string;
 //   clientSecret: string;
