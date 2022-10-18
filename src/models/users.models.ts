@@ -4,18 +4,14 @@ import mongoose from 'mongoose';
 import { UsersSchema } from '@/types/models';
 
 const modelName = 'users';
-
-const schemaInstance = new mongoose.Schema<UsersSchema>({
-  username: { type: String, required: true },
-  hashed_password: { type: String, required: true },
-  salt: { type: String, required: true },
-  role: {
-    type: String,
-    required: true,
-    enum: AUTHORIZED_ROLES,
-  },
-});
-export const UsersmodelInstance = mongoose.model<UsersSchema>(modelName, schemaInstance);
+export const UsersSchemaDef = {
+  username: String,
+  hashed_password: String,
+  salt: String,
+  role: { type: AUTHORIZED_ROLES, default: AUTHORIZED_ROLES.USER },
+};
+export const UserSchemaInstance = new mongoose.Schema<UsersSchema>(UsersSchemaDef);
+export const UsersmodelInstance = mongoose.model<UsersSchema>(modelName, UserSchemaInstance);
 
 // schemaInstance.virtual("password").set((password:string)=>{
 //     this.test =""

@@ -1,16 +1,18 @@
+import { TokenSchema } from '@/types/models';
 import mongoose from 'mongoose';
+import { ClientsSchema } from './clients.models';
+import { UserSchemaInstance } from './users.models';
 
-export const TokenSchema = {
-  accessToken: String,
-  accessTokenExpiresAt: Date,
-  refreshToken: String,
-  refreshTokenExpiresAt: Date,
-  client: Object,
-  user: Object,
-};
 const modelName = 'token';
-const schemaDefinition = TokenSchema;
-const tokenSchemaInstance = new mongoose.Schema(schemaDefinition);
+
+const tokenSchemaInstance = new mongoose.Schema<TokenSchema>({
+  accessToken: { type: String, required: true },
+  accessTokenExpiresAt: { type: Date, required: true },
+  refreshToken: { type: String, required: true },
+  refreshTokenExpiresAt: { type: Date, required: true },
+  client: { type: ClientsSchema, required: true },
+  user: { type: UserSchemaInstance, required: true },
+});
 
 tokenSchemaInstance.index({ refreshTokenExpiresAt: 1 }, { expireAfterSeconds: 0 });
 
