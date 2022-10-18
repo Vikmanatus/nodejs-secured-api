@@ -34,6 +34,24 @@ export interface TokenSchema {
   accessTokenExpiresAt: Date;
   refreshToken: string;
   refreshTokenExpiresAt: Date;
-  client: ClientsSchema;
-  user: UsersSchema;
+  client: ClientTokenInfo;
+  user: UserTokenInfo;
+}
+
+export interface UserTokenInfo {
+  username: string;
+  role: AUTHORIZED_ROLES[];
+}
+
+export interface ClientTokenInfo {
+  clientId: string;
+}
+
+export interface TokenSchemaDefinition {
+  accessToken: StringConstructor;
+  accessTokenExpiresAt: DateConstructor;
+  refreshToken: StringConstructor;
+  refreshTokenExpiresAt: DateConstructor;
+  client: ClientsSchemaDefinition;
+  user: UsersSchemaDefinition;
 }
