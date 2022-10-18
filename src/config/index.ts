@@ -12,6 +12,7 @@ import {
   UploadMediaInterface,
 } from '@/types';
 import multer from 'multer';
+import mongoose from 'mongoose';
 // import OAuth2Server from 'oauth2-server';
 
 // export const oauth = new OAuth2Server({
@@ -35,6 +36,26 @@ export const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 5000
 
 export const API_URL: string = process.env.API_URL ? process.env.API_URL : `http://localhost:${PORT}`;
 
+const DB_USER: string = process.env.DB_USER ? process.env.DB_USER : 'some_db_user';
+
+const DB_NAME: string = process.env.DB_NAME ? process.env.DB_NAME : 'some_db_name';
+
+const DB_PASSWORD: string = process.env.DB_PASSWORD ? process.env.DB_PASSWORD : 'some_db_password';
+
+const DB_URL = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_NAME}.abyn0v1.mongodb.net/?retryWrites=true&w=majority`;
+
+export const connectDb = (): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    mongoose
+      .connect(DB_URL)
+      .then((result) => {
+        resolve('Database successfully connected: ' + result.connection.host);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
 /**
  * This object is used to configure our project
  * We define the URL of the endpoint, the authroized roles and the match URL passed
