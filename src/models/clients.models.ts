@@ -1,18 +1,18 @@
-import { AUTHORIZED_ROLES } from '@/types';
-import { ClientsSchema, ClientsSchemaDefinition, GRANTS_AUTHORIZED_VALUES } from '@/types/models';
+import { ClientsSchema, GRANTS_AUTHORIZED_VALUES } from '@/types/models';
 import mongoose from 'mongoose';
 
 const modelName = 'clients';
-export const ClientSchemaDef: ClientsSchemaDefinition = {
-  id: String,
-  clientId: String,
-  clientSecret: String,
+
+export const ClientSchemaInstance = new mongoose.Schema<ClientsSchema>({
+  id: { type: String },
+  clientId: { type: String },
+  clientSecret: { type: String },
   grants: [
-    GRANTS_AUTHORIZED_VALUES.CLIENT_CREDENTIALS,
-    GRANTS_AUTHORIZED_VALUES.PASSWORD,
-    GRANTS_AUTHORIZED_VALUES.REFRESH_TOKEN,
+    {
+      type: String,
+      enum: Object.values(GRANTS_AUTHORIZED_VALUES),
+    },
   ],
-  redirectUris: [String],
-};
-export const ClientSchemaInstance = new mongoose.Schema<ClientsSchema>(ClientSchemaDef);
+  redirectUris: [{ type: String }],
+});
 export const ClientModelInstance = mongoose.model<ClientsSchema>(modelName, ClientSchemaInstance);

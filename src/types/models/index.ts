@@ -23,7 +23,7 @@ export interface ClientsSchema {
   id?: string;
   clientId: string;
   clientSecret: string;
-  grants: GRANTS_AUTHORIZED_VALUES[];
+  grants: GRANTS_AUTHORIZED_VALUES;
   redirectUris: string[];
 }
 
