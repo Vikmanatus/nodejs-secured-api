@@ -13,6 +13,7 @@ server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   connectDb()
     .then((result) => {
+      // generateOauthExampleData()
       console.log(result);
     })
     .catch((err) => {

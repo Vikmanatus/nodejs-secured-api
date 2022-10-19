@@ -3,8 +3,8 @@ import { AUTHORIZED_ROLES } from '../index';
 export interface UsersSchema {
   username: string;
   hashed_password: string;
-  salt: string;
-  role: { type: AUTHORIZED_ROLES; default: AUTHORIZED_ROLES };
+  salt?: string;
+  role: AUTHORIZED_ROLES[];
 }
 export enum GRANTS_AUTHORIZED_VALUES {
   PASSWORD="password",
@@ -16,14 +16,14 @@ export interface UsersSchemaDefinition {
   username: StringConstructor;
   hashed_password: StringConstructor;
   salt: StringConstructor;
-  role: { type: AUTHORIZED_ROLES[]; default: AUTHORIZED_ROLES };
+  role: AUTHORIZED_ROLES[];
 }
 
 export interface ClientsSchema {
-  id: string;
+  id?: string;
   clientId: string;
   clientSecret: string;
-  grants: { type: GRANTS_AUTHORIZED_VALUES; required: boolean };
+  grants: GRANTS_AUTHORIZED_VALUES[];
   redirectUris: string[];
 }
 
@@ -31,7 +31,7 @@ export interface ClientsSchemaDefinition {
   id: StringConstructor;
   clientId: StringConstructor;
   clientSecret: StringConstructor;
-  grants: { type: GRANTS_AUTHORIZED_VALUES[]; required: boolean };
+  grants:GRANTS_AUTHORIZED_VALUES[];
   redirectUris: StringConstructor[];
 }
 export interface TokenSchema {

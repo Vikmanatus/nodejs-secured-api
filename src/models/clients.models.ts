@@ -7,7 +7,11 @@ export const ClientSchemaDef: ClientsSchemaDefinition = {
   id: String,
   clientId: String,
   clientSecret: String,
-  grants: { type: Object.values(GRANTS_AUTHORIZED_VALUES), required: true },
+  grants: [
+    GRANTS_AUTHORIZED_VALUES.CLIENT_CREDENTIALS,
+    GRANTS_AUTHORIZED_VALUES.PASSWORD,
+    GRANTS_AUTHORIZED_VALUES.REFRESH_TOKEN,
+  ],
   redirectUris: [String],
 };
 export const ClientSchemaInstance = new mongoose.Schema<ClientsSchema>(ClientSchemaDef);

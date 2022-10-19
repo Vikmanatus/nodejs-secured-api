@@ -28,9 +28,9 @@ authRouter.post(
   obtainToken,
   (req: TypedRequestBody<AuthorizationRequestPayload>, res: TypedResponse<AuthorizationRequestResponse>) => {
     console.log('Inside request');
-    if (!req.body.email || !req.body.password) {
-      return res.status(400).json({ message: 'Invalide body request', success: false });
-    }
+    // if (!req.body.email || !req.body.password) {
+    //   return res.status(400).json({ message: 'Invalide body request', success: false });
+    // }
     return res.status(201).json({
       message: 'Successfully fetched token',
       success: true,

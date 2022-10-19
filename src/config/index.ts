@@ -18,13 +18,14 @@ import { TokenModelInstance } from '@/models/token.models';
 import { ClientModelInstance } from '@/models/clients.models';
 import { UsersModelInstance } from '@/models/users.models';
 import { NextFunction, Request, Response } from 'express';
+import { ClientsSchema, GRANTS_AUTHORIZED_VALUES, UsersSchema } from '@/types/models';
 
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
   model: {
     getAccessToken(accessToken, _callback): Promise<Token | Falsey> {
-      console.log("INSIDE ACCESSTOKEN FUNC");
+      console.log('INSIDE ACCESSTOKEN FUNC');
       return new Promise((resolve, reject) => {
         TokenModelInstance.findOne({ accessToken })
           .then((result) => {
@@ -36,63 +37,85 @@ export const oauth = new OAuth2Server({
       });
     },
     getClient(clientId, clientSecret, callback) {
-      console.log("INSIDE getClient FUNC");
+      console.log('INSIDE getClient FUNC');
+      console.log({ clientId });
+      console.log({ clientSecret });
 
-      return new Promise((resolve, reject) => {
-        ClientModelInstance.findOne({ clientId, clientSecret })
-          .then((result) => {
-            resolve(result as unknown as Client);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
+      ClientModelInstance.findOne({ clientId, clientSecret })
+        .lean()
+        .exec(
+          function (callback, err, token) {
+            console.log('RESPONSE', err, token);
+            if (!token) {
+              console.error('Token not found getAccessToken');
+            }
+            if (err) {
+              console.log('ERR');
+              console.log({ err });
+            }
+
+            callback(err, token);
+          }.bind(null, callback),
+        );
     },
     saveToken(token, client, user, callback) {
-      console.log("INSIDE saveToken FUNC");
-
+      console.log('INSIDE saveToken FUNC');
+      console.log({user});
+      console.log({client});
+      console.log({token});
       token.client = {
         id: client.clientId,
         grants: client.grants,
       };
-
-      token.user = {
+      
+      token["user"] = {
         username: user.username,
         role: user.role,
       };
-      return new Promise((resolve, reject) => {
-        const tokenInstance = new TokenModelInstance(token);
-        tokenInstance
-          .save()
-          .then((result) => {
-            resolve(result as unknown as Token);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
+
+      const tokenInstance = new TokenModelInstance(token);
+      tokenInstance.save(
+        function (callback, err, token) {
+          if (!token) {
+            console.error('Token not saved');
+          } else {
+            token = token.toObject();
+            delete token._id;
+            delete token.__v;
+          }
+
+          callback(err, token);
+        }.bind(null, callback),
+      );
     },
     getUser(username, password, callback) {
-      console.log("INSIDE getUser FUNC");
+      console.log('INSIDE getUser FUNC');
 
-      return new Promise((resolve, reject) => {
-        UsersModelInstance.findOne({ username })
-          .then((result) => {
-            resolve(result as unknown as User);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
+      UsersModelInstance.findOne({ username })
+        .lean()
+        .exec(
+          function (callback, err, user) {
+            if (!user) {
+              console.error('User not found');
+            }
+            // if (!UsersModelInstance.schema.methods.authenticate(password, user.salt, user.hashed_password)) {
+            //   console.log('INVALID CREDENtIALS', user);
+            //   callback({ data: 'Invalid credentials' });
+            // }
+            //console.log('USER FOUND',user,userModel.schema.methods.authenticate)
+
+            callback(err, user);
+          }.bind(null, callback),
+        );
     },
     getUserFromClient(client, callback) {
-      console.log("INSIDE getUserFromClient FUNC");
+      console.log('INSIDE getUserFromClient FUNC');
 
       return new Promise((resolve, reject) => {
         ClientModelInstance.findOne({
           clientId: client.clientId,
           clientSecret: client.clientSecret,
-          grants: 'client_credentials',
+          grants: GRANTS_AUTHORIZED_VALUES.CLIENT_CREDENTIALS,
         })
           .then((result) => {
             resolve(result);
@@ -103,7 +126,7 @@ export const oauth = new OAuth2Server({
       });
     },
     getRefreshToken(refreshToken, callback) {
-      console.log("INSIDE getRefreshToken FUNC");
+      console.log('INSIDE getRefreshToken FUNC');
 
       return new Promise((resolve, reject) => {
         TokenModelInstance.findOne({ refreshToken: refreshToken })
@@ -116,7 +139,7 @@ export const oauth = new OAuth2Server({
       });
     },
     revokeToken(token, callback) {
-      console.log("INSIDE revokeToken FUNC");
+      console.log('INSIDE revokeToken FUNC');
 
       return new Promise((resolve, reject) => {
         TokenModelInstance.deleteOne({ refreshToken: token.refreshToken })
@@ -129,9 +152,10 @@ export const oauth = new OAuth2Server({
           });
       });
     },
+
     verifyScope(token, scope, callback) {
-      console.log("INSIDE verifyScope FUNC");
-      
+      console.log('INSIDE verifyScope FUNC');
+
       return Promise.resolve(true);
     },
   },
@@ -144,11 +168,12 @@ export const obtainToken = (req: Request, res: Response, next: NextFunction) => 
   return oauth
     .token(request, response)
     .then((result) => {
-      console.log({result});
+      console.log({ result });
       return result;
     })
     .catch((err) => {
-      console.log({err});
+      console.log("Error obtaining token");
+      console.log({ err });
       return err;
     });
 };
@@ -162,6 +187,48 @@ export const Multer = multer({
     fileSize: 5 * 1024 * 1024,
   },
 });
+
+export const generateOauthExampleData = () => {
+  const client1 = new ClientModelInstance<ClientsSchema>({
+    id: 'application', // TODO: Needed by refresh_token grant, because there is a bug at line 103 in https://github.com/oauthjs/node-oauth2-server/blob/v3.0.1/lib/grant-types/refresh-token-grant-type.js (used client.id instead of client.clientId)
+    clientId: 'application',
+    clientSecret: 'secret',
+    grants: [GRANTS_AUTHORIZED_VALUES.PASSWORD, GRANTS_AUTHORIZED_VALUES.REFRESH_TOKEN],
+    redirectUris: [],
+  });
+  const client2 = new ClientModelInstance<ClientsSchema>({
+    clientId: 'confidentialApplication',
+    clientSecret: 'topSecret',
+    grants: [GRANTS_AUTHORIZED_VALUES.PASSWORD, GRANTS_AUTHORIZED_VALUES.CLIENT_CREDENTIALS],
+    redirectUris: [],
+  });
+
+  const user = new UsersModelInstance<UsersSchema>({
+    username: 'pedroetb',
+    hashed_password: 'password',
+    role: [AUTHORIZED_ROLES.USER],
+  });
+  client1.save(function (err, client) {
+    if (err) {
+      return console.error(err);
+    }
+    console.log('Created client', client);
+  });
+
+  user.save(function (err, user) {
+    if (err) {
+      return console.error(err);
+    }
+    console.log('Created user', user);
+  });
+
+  client2.save(function (err, client) {
+    if (err) {
+      return console.error(err);
+    }
+    console.log('Created client', client);
+  });
+};
 
 /**
  * Port used to launch our server

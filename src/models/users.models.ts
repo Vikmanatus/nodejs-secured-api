@@ -7,7 +7,7 @@ const modelName = 'users';
 
 export const UsersSchemaDef: UsersSchemaDefinition = {
   username: String,
-  role: { type: Object.values(AUTHORIZED_ROLES), default: AUTHORIZED_ROLES.USER },
+  role: [AUTHORIZED_ROLES.ADMIN, AUTHORIZED_ROLES.USER, AUTHORIZED_ROLES.SUPER_ADMIN],
   hashed_password: String,
   salt: String,
 };
