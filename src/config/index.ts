@@ -18,7 +18,7 @@ import { TokenModelInstance } from '@/models/token.models';
 import { ClientModelInstance } from '@/models/clients.models';
 import { UsersModelInstance } from '@/models/users.models';
 import { NextFunction, Request, Response } from 'express';
-import { ClientsSchema, GRANTS_AUTHORIZED_VALUES, UsersSchema } from '@/types/models';
+import { ClientsSchema, GRANTS_AUTHORIZED_VALUES, TokenSchema, UsersSchema } from '@/types/models';
 
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
@@ -58,7 +58,7 @@ export const oauth = new OAuth2Server({
           }.bind(null, callback),
         );
     },
-    saveToken(token, client, user, callback) {
+    saveToken(token:Token, client, user, callback) {
       console.log('INSIDE saveToken FUNC');
       console.log({user});
       console.log({client});
@@ -67,13 +67,14 @@ export const oauth = new OAuth2Server({
         id: client.clientId,
         grants: client.grants,
       };
-      
+      console.log("adding client info");
       token["user"] = {
         username: user.username,
         role: user.role,
       };
-
-      const tokenInstance = new TokenModelInstance(token);
+      console.log("user info should be added");
+      console.log({token});
+      const tokenInstance = new TokenModelInstance<TokenSchema>(token);
       tokenInstance.save(
         function (callback, err, token) {
           if (!token) {

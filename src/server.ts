@@ -2,7 +2,7 @@ import 'module-alias/register';
 import http from 'http';
 import expressApp from './app';
 
-import { connectDb, PORT } from '@/config';
+import { connectDb, generateOauthExampleData, PORT } from '@/config';
 
 /**
  * Creating HTTP server
@@ -13,7 +13,7 @@ server.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   connectDb()
     .then((result) => {
-      // generateOauthExampleData()
+      //generateOauthExampleData()
       console.log(result);
     })
     .catch((err) => {
