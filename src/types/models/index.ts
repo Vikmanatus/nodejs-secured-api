@@ -28,21 +28,3 @@ export interface TokenSchema {
   client: { id: string; grants: GRANTS_AUTHORIZED_VALUES[] };
   user: { id: string; role: AUTHORIZED_ROLES[] };
 }
-
-export interface UserTokenInfo {
-  username: string;
-  role: AUTHORIZED_ROLES[];
-}
-
-export interface ClientTokenInfo {
-  clientId: string;
-}
-
-export interface TokenSchemaDefinition {
-  accessToken: StringConstructor;
-  accessTokenExpiresAt: DateConstructor;
-  refreshToken: StringConstructor;
-  refreshTokenExpiresAt: DateConstructor;
-  client: { id: StringConstructor };
-  user: { id: StringConstructor };
-}
