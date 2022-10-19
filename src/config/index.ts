@@ -58,36 +58,28 @@ export const oauth = new OAuth2Server({
           }.bind(null, callback),
         );
     },
-    saveToken(token: TokenSchema, client, user: UsersSchema, callback) {
+    saveToken(token: TokenSchema, client, user: UsersSchema) {
       console.log('INSIDE saveToken FUNC');
-      console.log({ user });
-      console.log({ client });
-      console.log({ token });
       token.client = {
         id: client.clientId,
         grants: client.grants as GRANTS_AUTHORIZED_VALUES[],
       };
-      console.log('adding client info');
+
       token.user = {
         username: user.username,
         role: user.role,
       };
-      console.log('user info should be added');
-      console.log({ token });
-      const tokenInstance = new TokenModelInstance<TokenSchema>(token);
-      tokenInstance.save(
-        function (callback, err, token) {
-          if (!token) {
-            console.error('Token not saved');
-          } else {
-            token = token.toObject();
-            delete token._id;
-            delete token.__v;
-          }
-
-          callback(err, token);
-        }.bind(null, callback),
-      );
+      return new Promise((resolve, reject) => {
+        const tokenInstance = new TokenModelInstance<TokenSchema>(token);
+        tokenInstance
+          .save()
+          .then((result: TokenSchema) => {
+            resolve(result);
+          })
+          .catch((err: mongoose.CallbackError) => {
+            reject(err);
+          });
+      });
     },
     getUser(username, password, callback) {
       console.log('INSIDE getUser FUNC');
