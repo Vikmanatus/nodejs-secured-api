@@ -23,19 +23,5 @@ authRouter.get(permissionConfig.authRoot.url, (_req: Request, res: TypedResponse
 /**
  * Route to request token
  */
-authRouter.post(
-  permissionConfig.authorizationUrl.url,
-  obtainToken,
-  (req: TypedRequestBody<AuthorizationRequestPayload>, res: TypedResponse<AuthorizationRequestResponse>) => {
-    console.log('Inside request');
-    // if (!req.body.email || !req.body.password) {
-    //   return res.status(400).json({ message: 'Invalide body request', success: false });
-    // }
-    return res.status(201).json({
-      message: 'Successfully fetched token',
-      success: true,
-      data: { token: 'Secret token' },
-    });
-  },
-);
+authRouter.post(permissionConfig.authorizationUrl.url, obtainToken);
 export default authRouter;

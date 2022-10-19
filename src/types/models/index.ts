@@ -26,5 +26,5 @@ export interface TokenSchema {
   refreshToken: string;
   refreshTokenExpiresAt: Date;
   client: { id: string; grants: GRANTS_AUTHORIZED_VALUES[] };
-  user: { id: string; role: AUTHORIZED_ROLES[] };
+  user: { username: string; role: AUTHORIZED_ROLES[] };
 }

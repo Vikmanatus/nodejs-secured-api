@@ -58,22 +58,22 @@ export const oauth = new OAuth2Server({
           }.bind(null, callback),
         );
     },
-    saveToken(token:Token, client, user, callback) {
+    saveToken(token: TokenSchema, client, user: UsersSchema, callback) {
       console.log('INSIDE saveToken FUNC');
-      console.log({user});
-      console.log({client});
-      console.log({token});
+      console.log({ user });
+      console.log({ client });
+      console.log({ token });
       token.client = {
         id: client.clientId,
-        grants: client.grants,
+        grants: client.grants as GRANTS_AUTHORIZED_VALUES[],
       };
-      console.log("adding client info");
-      token["user"] = {
+      console.log('adding client info');
+      token.user = {
         username: user.username,
         role: user.role,
       };
-      console.log("user info should be added");
-      console.log({token});
+      console.log('user info should be added');
+      console.log({ token });
       const tokenInstance = new TokenModelInstance<TokenSchema>(token);
       tokenInstance.save(
         function (callback, err, token) {
@@ -170,10 +170,14 @@ export const obtainToken = (req: Request, res: Response, next: NextFunction) => 
     .token(request, response)
     .then((result) => {
       console.log({ result });
-      return result;
+      return res.status(201).json({
+        message: 'Successfully fetched token',
+        success: true,
+        data: result,
+      });
     })
     .catch((err) => {
-      console.log("Error obtaining token");
+      console.log('Error obtaining token');
       console.log({ err });
       return err;
     });
