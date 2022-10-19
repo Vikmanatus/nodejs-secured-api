@@ -12,12 +12,7 @@ export enum GRANTS_AUTHORIZED_VALUES {
   REFRESH_TOKEN="refresh_token"
 }
 
-export interface UsersSchemaDefinition {
-  username: StringConstructor;
-  hashed_password: StringConstructor;
-  salt: StringConstructor;
-  role: AUTHORIZED_ROLES[];
-}
+
 
 export interface ClientsSchema {
   id?: string;
@@ -27,13 +22,6 @@ export interface ClientsSchema {
   redirectUris: string[];
 }
 
-export interface ClientsSchemaDefinition {
-  id: StringConstructor;
-  clientId: StringConstructor;
-  clientSecret: StringConstructor;
-  grants:GRANTS_AUTHORIZED_VALUES[];
-  redirectUris: StringConstructor[];
-}
 export interface TokenSchema {
   accessToken: string;
   accessTokenExpiresAt: Date;
