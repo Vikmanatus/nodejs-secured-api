@@ -6,6 +6,11 @@ export interface UsersSchema {
   salt: string;
   role: { type: AUTHORIZED_ROLES; default: AUTHORIZED_ROLES };
 }
+export enum GRANTS_AUTHORIZED_VALUES {
+  PASSWORD="password",
+  CLIENT_CREDENTIALS = "client_credentials",
+  REFRESH_TOKEN="refresh_token"
+}
 
 export interface UsersSchemaDefinition {
   username: StringConstructor;
@@ -18,7 +23,7 @@ export interface ClientsSchema {
   id: string;
   clientId: string;
   clientSecret: string;
-  grants: { type: AUTHORIZED_ROLES; required: boolean };
+  grants: { type: GRANTS_AUTHORIZED_VALUES; required: boolean };
   redirectUris: string[];
 }
 
@@ -26,7 +31,7 @@ export interface ClientsSchemaDefinition {
   id: StringConstructor;
   clientId: StringConstructor;
   clientSecret: StringConstructor;
-  grants: { type: AUTHORIZED_ROLES[]; required: boolean };
+  grants: { type: GRANTS_AUTHORIZED_VALUES[]; required: boolean };
   redirectUris: StringConstructor[];
 }
 export interface TokenSchema {

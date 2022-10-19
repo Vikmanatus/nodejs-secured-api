@@ -17,12 +17,14 @@ import OAuth2Server, { Client, Falsey, RefreshToken, Token, User } from 'oauth2-
 import { TokenModelInstance } from '@/models/token.models';
 import { ClientModelInstance } from '@/models/clients.models';
 import { UsersModelInstance } from '@/models/users.models';
+import { NextFunction, Request, Response } from 'express';
 
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
   model: {
     getAccessToken(accessToken, _callback): Promise<Token | Falsey> {
+      console.log("INSIDE ACCESSTOKEN FUNC");
       return new Promise((resolve, reject) => {
         TokenModelInstance.findOne({ accessToken })
           .then((result) => {
@@ -34,6 +36,8 @@ export const oauth = new OAuth2Server({
       });
     },
     getClient(clientId, clientSecret, callback) {
+      console.log("INSIDE getClient FUNC");
+
       return new Promise((resolve, reject) => {
         ClientModelInstance.findOne({ clientId, clientSecret })
           .then((result) => {
@@ -45,6 +49,8 @@ export const oauth = new OAuth2Server({
       });
     },
     saveToken(token, client, user, callback) {
+      console.log("INSIDE saveToken FUNC");
+
       token.client = {
         id: client.clientId,
         grants: client.grants,
@@ -67,6 +73,8 @@ export const oauth = new OAuth2Server({
       });
     },
     getUser(username, password, callback) {
+      console.log("INSIDE getUser FUNC");
+
       return new Promise((resolve, reject) => {
         UsersModelInstance.findOne({ username })
           .then((result) => {
@@ -78,6 +86,8 @@ export const oauth = new OAuth2Server({
       });
     },
     getUserFromClient(client, callback) {
+      console.log("INSIDE getUserFromClient FUNC");
+
       return new Promise((resolve, reject) => {
         ClientModelInstance.findOne({
           clientId: client.clientId,
@@ -93,6 +103,8 @@ export const oauth = new OAuth2Server({
       });
     },
     getRefreshToken(refreshToken, callback) {
+      console.log("INSIDE getRefreshToken FUNC");
+
       return new Promise((resolve, reject) => {
         TokenModelInstance.findOne({ refreshToken: refreshToken })
           .then((result) => {
@@ -104,6 +116,8 @@ export const oauth = new OAuth2Server({
       });
     },
     revokeToken(token, callback) {
+      console.log("INSIDE revokeToken FUNC");
+
       return new Promise((resolve, reject) => {
         TokenModelInstance.deleteOne({ refreshToken: token.refreshToken })
           .then((result) => {
@@ -116,10 +130,28 @@ export const oauth = new OAuth2Server({
       });
     },
     verifyScope(token, scope, callback) {
+      console.log("INSIDE verifyScope FUNC");
+      
       return Promise.resolve(true);
     },
   },
 });
+
+export const obtainToken = (req: Request, res: Response, next: NextFunction) => {
+  console.log('inside middleware');
+  const request = new OAuth2Server.Request(req);
+  const response = new OAuth2Server.Response(res);
+  return oauth
+    .token(request, response)
+    .then((result) => {
+      console.log({result});
+      return result;
+    })
+    .catch((err) => {
+      console.log({err});
+      return err;
+    });
+};
 dotenv.config({
   path: '.env',
 });

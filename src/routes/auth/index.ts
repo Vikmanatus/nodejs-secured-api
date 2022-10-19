@@ -1,13 +1,17 @@
-import { permissionConfig } from '@/config';
+import { oauth, obtainToken, permissionConfig } from '@/config';
 import {
   AuthorizationRequestPayload,
   AuthorizationRequestResponse,
   BasicJsonResponse,
+  ExpressOauthRouter,
   TypedRequestBody,
   TypedResponse,
 } from '@/types';
-import express, { Request } from 'express';
-const authRouter = express.Router();
+import express, { Request, Router } from 'express';
+import OAuth2Server from 'oauth2-server';
+
+const authRouter = express.Router() as ExpressOauthRouter;
+authRouter.oauth = oauth;
 
 /**
  * Auth root endpoint
@@ -21,7 +25,9 @@ authRouter.get(permissionConfig.authRoot.url, (_req: Request, res: TypedResponse
  */
 authRouter.post(
   permissionConfig.authorizationUrl.url,
+  obtainToken,
   (req: TypedRequestBody<AuthorizationRequestPayload>, res: TypedResponse<AuthorizationRequestResponse>) => {
+    console.log('Inside request');
     if (!req.body.email || !req.body.password) {
       return res.status(400).json({ message: 'Invalide body request', success: false });
     }

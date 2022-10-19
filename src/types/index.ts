@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { IRouter, Request, Response, Router, RouterOptions } from 'express';
+import OAuth2Server from 'oauth2-server';
 import { FormParamDefinition } from 'postman-collection';
 
 /**
@@ -180,4 +181,10 @@ export enum CONTENT_TYPES {
   FILES = 'multipart/form-data',
   URL_ENCODED = 'application/x-www-form-urlencoded',
   KEY = 'Content-Type',
+}
+
+
+export interface ExpressOauthRouter extends Router {
+  oauth: OAuth2Server;
+
 }
