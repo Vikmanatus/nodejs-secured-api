@@ -13,7 +13,7 @@ export enum GRANTS_AUTHORIZED_VALUES {
 }
 
 export interface ClientsSchema {
-  id?: string;
+  id: string;
   clientId: string;
   clientSecret: string;
   grants: GRANTS_AUTHORIZED_VALUES[];

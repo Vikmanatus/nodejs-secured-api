@@ -13,7 +13,7 @@ import {
 } from '@/types';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import OAuth2Server, { Client, Falsey, RefreshToken, Token, User } from 'oauth2-server';
+import OAuth2Server, {  Falsey, Token, } from 'oauth2-server';
 import { TokenModelInstance } from '@/models/token.models';
 import { ClientModelInstance } from '@/models/clients.models';
 import { UsersModelInstance } from '@/models/users.models';
@@ -24,39 +24,29 @@ export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
   model: {
-    getAccessToken(accessToken, _callback): Promise<Token | Falsey> {
+    getAccessToken(accessToken): Promise<Token | Falsey> {
       console.log('INSIDE ACCESSTOKEN FUNC');
       return new Promise((resolve, reject) => {
         TokenModelInstance.findOne({ accessToken })
           .then((result) => {
-            resolve(result as unknown as Token);
+            resolve(result);
           })
-          .catch((err) => {
+          .catch((err: mongoose.CallbackError) => {
             reject(err);
           });
       });
     },
-    getClient(clientId, clientSecret, callback) {
+    getClient(clientId: string, clientSecret: string) {
       console.log('INSIDE getClient FUNC');
-      console.log({ clientId });
-      console.log({ clientSecret });
-
-      ClientModelInstance.findOne({ clientId, clientSecret })
-        .lean()
-        .exec(
-          function (callback, err, token) {
-            console.log('RESPONSE', err, token);
-            if (!token) {
-              console.error('Token not found getAccessToken');
-            }
-            if (err) {
-              console.log('ERR');
-              console.log({ err });
-            }
-
-            callback(err, token);
-          }.bind(null, callback),
-        );
+      return new Promise((resolve, reject) => {
+        ClientModelInstance.findOne({ clientId, clientSecret })
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err: mongoose.CallbackError) => {
+            reject(err);
+          });
+      });
     },
     saveToken(token: TokenSchema, client, user: UsersSchema) {
       console.log('INSIDE saveToken FUNC');
@@ -81,27 +71,19 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    getUser(username, password, callback) {
+    getUser(username:string, _password:string) {
       console.log('INSIDE getUser FUNC');
-
-      UsersModelInstance.findOne({ username })
-        .lean()
-        .exec(
-          function (callback, err, user) {
-            if (!user) {
-              console.error('User not found');
-            }
-            // if (!UsersModelInstance.schema.methods.authenticate(password, user.salt, user.hashed_password)) {
-            //   console.log('INVALID CREDENtIALS', user);
-            //   callback({ data: 'Invalid credentials' });
-            // }
-            //console.log('USER FOUND',user,userModel.schema.methods.authenticate)
-
-            callback(err, user);
-          }.bind(null, callback),
-        );
+      return new Promise((resolve, reject) => {
+        UsersModelInstance.findOne({ username })
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err: mongoose.CallbackError) => {
+            reject(err);
+          });
+      });
     },
-    getUserFromClient(client, callback) {
+    getUserFromClient(client:ClientsSchema) {
       console.log('INSIDE getUserFromClient FUNC');
 
       return new Promise((resolve, reject) => {
@@ -113,25 +95,25 @@ export const oauth = new OAuth2Server({
           .then((result) => {
             resolve(result);
           })
-          .catch((err) => {
+          .catch((err: mongoose.CallbackError) => {
             reject(err);
           });
       });
     },
-    getRefreshToken(refreshToken, callback) {
+    getRefreshToken(refreshToken:string) {
       console.log('INSIDE getRefreshToken FUNC');
 
       return new Promise((resolve, reject) => {
         TokenModelInstance.findOne({ refreshToken: refreshToken })
           .then((result) => {
-            resolve(result as unknown as RefreshToken);
+            resolve(result);
           })
-          .catch((err) => {
+          .catch((err: mongoose.CallbackError) => {
             reject(err);
           });
       });
     },
-    revokeToken(token, callback) {
+    revokeToken(token:TokenSchema) {
       console.log('INSIDE revokeToken FUNC');
 
       return new Promise((resolve, reject) => {
@@ -140,13 +122,13 @@ export const oauth = new OAuth2Server({
             console.log({ result });
             resolve(true);
           })
-          .catch((err) => {
+          .catch((err: mongoose.CallbackError) => {
             reject(err);
           });
       });
     },
 
-    verifyScope(token, scope, callback) {
+    verifyScope(_token:TokenSchema, _scope) {
       console.log('INSIDE verifyScope FUNC');
 
       return Promise.resolve(true);
@@ -154,7 +136,7 @@ export const oauth = new OAuth2Server({
   },
 });
 
-export const obtainToken = (req: Request, res: Response, next: NextFunction) => {
+export const obtainToken = (req: Request, res: Response, _next: NextFunction) => {
   console.log('inside middleware');
   const request = new OAuth2Server.Request(req);
   const response = new OAuth2Server.Response(res);
@@ -194,6 +176,7 @@ export const generateOauthExampleData = () => {
     redirectUris: [],
   });
   const client2 = new ClientModelInstance<ClientsSchema>({
+    id: 'someId',
     clientId: 'confidentialApplication',
     clientSecret: 'topSecret',
     grants: [GRANTS_AUTHORIZED_VALUES.PASSWORD, GRANTS_AUTHORIZED_VALUES.CLIENT_CREDENTIALS],
