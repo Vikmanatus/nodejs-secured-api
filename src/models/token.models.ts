@@ -1,20 +1,17 @@
-import { TokenSchema, TokenSchemaDefinition } from '@/types/models';
+import { AUTHORIZED_ROLES } from '@/types';
+import { GRANTS_AUTHORIZED_VALUES, TokenSchema } from '@/types/models';
 import mongoose from 'mongoose';
-import { ClientSchemaDef } from './clients.models';
-import { UsersSchemaDef } from './users.models';
 
 const modelName = 'token';
 
-export const TokenSchemaDef: TokenSchemaDefinition = {
-  accessToken: String,
-  accessTokenExpiresAt: Date,
-  refreshToken: String,
-  refreshTokenExpiresAt: Date,
-  client: { id: String },
-  user: { id: String },
-};
-
-export const TokenSchemaInstance = new mongoose.Schema<TokenSchema>(TokenSchemaDef);
+export const TokenSchemaInstance = new mongoose.Schema<TokenSchema>({
+  accessToken: { type: String },
+  accessTokenExpiresAt: { type: Date },
+  refreshToken: { type: String },
+  refreshTokenExpiresAt: { type: Date },
+  client: { id: { type: String }, grants: [{ type: String, enum: Object.values(GRANTS_AUTHORIZED_VALUES) }] },
+  user: { username: { type: String }, role: [{ type: String, enum: Object.values(AUTHORIZED_ROLES) }] },
+});
 
 TokenSchemaInstance.index({ refreshTokenExpiresAt: 1 }, { expireAfterSeconds: 0 });
 

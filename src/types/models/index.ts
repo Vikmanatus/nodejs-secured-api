@@ -7,18 +7,16 @@ export interface UsersSchema {
   role: AUTHORIZED_ROLES[];
 }
 export enum GRANTS_AUTHORIZED_VALUES {
-  PASSWORD="password",
-  CLIENT_CREDENTIALS = "client_credentials",
-  REFRESH_TOKEN="refresh_token"
+  PASSWORD = 'password',
+  CLIENT_CREDENTIALS = 'client_credentials',
+  REFRESH_TOKEN = 'refresh_token',
 }
-
-
 
 export interface ClientsSchema {
   id?: string;
   clientId: string;
   clientSecret: string;
-  grants: GRANTS_AUTHORIZED_VALUES;
+  grants: GRANTS_AUTHORIZED_VALUES[];
   redirectUris: string[];
 }
 
@@ -27,8 +25,8 @@ export interface TokenSchema {
   accessTokenExpiresAt: Date;
   refreshToken: string;
   refreshTokenExpiresAt: Date;
-  client: { id: string };
-  user: { id: string };
+  client: { id: string; grants: GRANTS_AUTHORIZED_VALUES[] };
+  user: { id: string; role: AUTHORIZED_ROLES[] };
 }
 
 export interface UserTokenInfo {
