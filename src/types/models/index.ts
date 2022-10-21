@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import OAuth2Server, { Falsey } from 'oauth2-server';
 import { AUTHORIZED_ROLES } from '../index';
 
 export interface UsersSchema {
@@ -33,3 +34,18 @@ export interface TokenSchema {
 export type DbSearchResultType<T> = (mongoose.Document<unknown, unknown, T> & T & {
   _id: mongoose.Types.ObjectId;
 }) | null
+
+export type OauthFunctionsModel = {
+  getAccessToken: (accessToken: string) => Promise<Falsey | DbSearchResultType<TokenSchema>>;
+  getClient: (clientId: string, clientSecret: string) => Promise<OAuth2Server.Falsey | OAuth2Server.Client>;
+  saveToken: (
+    token: TokenSchema,
+    client: ClientsSchema,
+    user: UsersSchema,
+  ) => Promise<Falsey | DbSearchResultType<TokenSchema>>;
+  getUser: (username: string, password: string) => Promise<Falsey | DbSearchResultType<UsersSchema>>;
+  getUserFromClient: (client: ClientsSchema) => Promise<Falsey | DbSearchResultType<ClientsSchema>>;
+  getRefreshToken: (refreshToken: string) => Promise<Falsey | DbSearchResultType<TokenSchema>>;
+  revokeToken: (token: TokenSchema) => Promise<boolean>;
+  verifyScope(token: TokenSchema, scope: string | string[]): Promise<boolean>;
+};

@@ -13,126 +13,17 @@ import {
 } from '@/types';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import OAuth2Server, { Falsey } from 'oauth2-server';
-import { TokenModelInstance } from '@/models/token.models';
+import OAuth2Server from 'oauth2-server';
 import { ClientModelInstance } from '@/models/clients.models';
 import { UsersModelInstance } from '@/models/users.models';
-import { ClientsSchema, DbSearchResultType, GRANTS_AUTHORIZED_VALUES, TokenSchema, UsersSchema } from '@/types/models';
+import { ClientsSchema, GRANTS_AUTHORIZED_VALUES, UsersSchema } from '@/types/models';
+import { oauthModel } from '@/oauth';
+
 
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
-  model: {
-    getAccessToken(accessToken): Promise<Falsey | DbSearchResultType<TokenSchema>> {
-      console.log('INSIDE ACCESSTOKEN FUNC');
-      return new Promise((resolve, reject) => {
-        TokenModelInstance.findOne({ accessToken })
-          .then((result) => {
-            resolve(result);
-          })
-          .catch((err: mongoose.CallbackError) => {
-            reject(err);
-          });
-      });
-    },
-    getClient(clientId: string, clientSecret: string): Promise<Falsey | DbSearchResultType<ClientsSchema>> {
-      console.log('INSIDE getClient FUNC');
-      return new Promise((resolve, reject) => {
-        ClientModelInstance.findOne({ clientId, clientSecret })
-          .then((result) => {
-            resolve(result);
-          })
-          .catch((err: mongoose.CallbackError) => {
-            reject(err);
-          });
-      });
-    },
-    saveToken(token: TokenSchema, client, user: UsersSchema): Promise<Falsey | DbSearchResultType<TokenSchema>> {
-      console.log('INSIDE saveToken FUNC');
-      token.client = {
-        id: client.clientId,
-        grants: client.grants as GRANTS_AUTHORIZED_VALUES[],
-      };
-
-      token.user = {
-        username: user.username,
-        role: user.role,
-      };
-      return new Promise((resolve, reject) => {
-        const tokenInstance = new TokenModelInstance<TokenSchema>(token);
-        tokenInstance
-          .save()
-          .then((result) => {
-            resolve(result);
-          })
-          .catch((err: mongoose.CallbackError) => {
-            reject(err);
-          });
-      });
-    },
-    getUser(username: string, _password: string): Promise<Falsey | DbSearchResultType<UsersSchema>> {
-      console.log('INSIDE getUser FUNC');
-      return new Promise((resolve, reject) => {
-        UsersModelInstance.findOne({ username })
-          .then((result) => {
-            resolve(result);
-          })
-          .catch((err: mongoose.CallbackError) => {
-            reject(err);
-          });
-      });
-    },
-    getUserFromClient(client: ClientsSchema): Promise<Falsey | DbSearchResultType<ClientsSchema>> {
-      console.log('INSIDE getUserFromClient FUNC');
-
-      return new Promise((resolve, reject) => {
-        ClientModelInstance.findOne({
-          clientId: client.clientId,
-          clientSecret: client.clientSecret,
-          grants: GRANTS_AUTHORIZED_VALUES.CLIENT_CREDENTIALS,
-        })
-          .then((result) => {
-            resolve(result);
-          })
-          .catch((err: mongoose.CallbackError) => {
-            reject(err);
-          });
-      });
-    },
-    getRefreshToken(refreshToken: string): Promise<Falsey | DbSearchResultType<TokenSchema>> {
-      console.log('INSIDE getRefreshToken FUNC');
-
-      return new Promise((resolve, reject) => {
-        TokenModelInstance.findOne({ refreshToken: refreshToken })
-          .then((result: DbSearchResultType<TokenSchema>) => {
-            resolve(result);
-          })
-          .catch((err: mongoose.CallbackError) => {
-            reject(err);
-          });
-      });
-    },
-    revokeToken(token: TokenSchema): Promise<boolean> {
-      console.log('INSIDE revokeToken FUNC');
-
-      return new Promise((resolve, reject) => {
-        TokenModelInstance.deleteOne({ refreshToken: token.refreshToken })
-          .then((result) => {
-            console.log({ result });
-            resolve(true);
-          })
-          .catch((err: mongoose.CallbackError) => {
-            reject(err);
-          });
-      });
-    },
-
-    verifyScope(_token: TokenSchema, _scope) {
-      console.log('INSIDE verifyScope FUNC');
-
-      return Promise.resolve(true);
-    },
-  },
+  model: oauthModel
 });
 
 dotenv.config({
@@ -146,11 +37,11 @@ export const Multer = multer({
   },
 });
 
-export const DebugDatabaseUser:UsersSchema = {
-  username:"pedroetb",
-  hashed_password:"password",
+export const DebugDatabaseUser: UsersSchema = {
+  username: 'pedroetb',
+  hashed_password: 'password',
   role: [AUTHORIZED_ROLES.USER],
-}
+};
 
 export const generateOauthExampleData = () => {
   const client1 = new ClientModelInstance<ClientsSchema>({
@@ -275,7 +166,7 @@ export const postmanConfig: PostmanConfigType = {
       data: {
         username: DebugDatabaseUser.username,
         password: DebugDatabaseUser.hashed_password,
-        grant_type:GRANTS_AUTHORIZED_VALUES.PASSWORD
+        grant_type: GRANTS_AUTHORIZED_VALUES.PASSWORD,
       } as AuthorizationRequestPayload,
     },
     requestName: 'Obtain token',
