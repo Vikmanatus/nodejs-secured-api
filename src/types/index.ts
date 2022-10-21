@@ -58,7 +58,7 @@ export enum REQUEST_TYPES {
  */
 export enum POSTMAN_FORM_TYPES {
   RAW = 'raw',
-  ENCODED = 'x-www-form-urlencoded',
+  ENCODED = 'urlencoded',
   FILES = 'formdata',
   NONE = 'none',
   FILE = 'file',

@@ -1,7 +1,8 @@
 import { oauth } from '@/config';
 import { AuthorizationRequestResponse, GenericApiError, TypedResponse } from '@/types';
 import { NextFunction, Request, Response } from 'express';
-import { OAuth2Server } from 'oauth2-server';
+import OAuth2Server from 'oauth2-server';
+
 
 export const obtainToken = (req: Request, res: TypedResponse<AuthorizationRequestResponse|GenericApiError>, _next: NextFunction) => {
   console.log('inside middleware');

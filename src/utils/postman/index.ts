@@ -46,7 +46,7 @@ const generatePostmanBody = (element: PostmanObjectConfigType): RequestBodyDefin
       mode: element.requestInformation.postmanFormType.toString(),
       formdata: [
         {
-          key: typedData.data?.relativeFilePath,
+          key: typedData.data?.requestKey,
           type: POSTMAN_FORM_TYPES.FILE,
           src: typedData.data?.relativeFilePath,
         } as OverridePostmanFormDataInterface,
