@@ -1,14 +1,11 @@
 import { oauth, permissionConfig } from '@/config';
 import { obtainToken } from '@/middlewares';
 import {
-  AuthorizationRequestPayload,
-  AuthorizationRequestResponse,
   BasicJsonResponse,
   ExpressOauthRouter,
-  TypedRequestBody,
   TypedResponse,
 } from '@/types';
-import express, { Request, Router } from 'express';
+import express, { Request } from 'express';
 
 const authRouter = express.Router() as ExpressOauthRouter;
 authRouter.oauth = oauth;

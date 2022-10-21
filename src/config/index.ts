@@ -269,10 +269,11 @@ export const postmanConfig: PostmanConfigType = {
     requestInformation: {
       postmanFormType: POSTMAN_FORM_TYPES.RAW,
       type: REQUEST_TYPES.POST,
-      contentType: CONTENT_TYPES.JSON,
+      contentType: CONTENT_TYPES.URL_ENCODED,
       data: {
-        email: 'test@gmail.com',
-        password: 'fake_pswd_from_config',
+        username: 'username',
+        password: 'pedroetb',
+        grant_type:GRANTS_AUTHORIZED_VALUES.PASSWORD
       } as AuthorizationRequestPayload,
     },
     requestName: 'Obtain token',

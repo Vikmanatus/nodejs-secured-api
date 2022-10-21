@@ -1,6 +1,7 @@
-import { IRouter, Request, Response, Router, RouterOptions } from 'express';
-import OAuth2Server from 'oauth2-server';
+import {  Request, Response, Router } from 'express';
+import OAuth2Server, { Token } from 'oauth2-server';
 import { FormParamDefinition } from 'postman-collection';
+import { GRANTS_AUTHORIZED_VALUES } from './models';
 
 /**
  * This enum represents the different API endpoints decorators passes to express in app.ts file
@@ -27,7 +28,7 @@ export enum AUTHORIZED_ENDPOINTS {
   SIGNUP_ENDPOINT = '/signup',
   AUTHORIZATION_ENDPOINT = '/oauth/token',
   UPLOAD_MEDIAS_ENDPOINT = '/single-file/upload',
-  ADMIN_TEST_ROUTE="/welcome-admin"
+  ADMIN_TEST_ROUTE = '/welcome-admin',
 }
 
 /**
@@ -40,7 +41,7 @@ export enum MATCH_ENDPOINTS {
   MATCH_AUTHORIZATION_ENDPOINT = ROUTER_ENDPOINTS.AUTH + AUTHORIZED_ENDPOINTS.AUTHORIZATION_ENDPOINT,
   MATCH_AUTH_ROOT_ENDPOINT = ROUTER_ENDPOINTS.AUTH,
   MATCH_UPLOAD_MEDIAS_ENDPOINT = ROUTER_ENDPOINTS.MEDIAS + AUTHORIZED_ENDPOINTS.UPLOAD_MEDIAS_ENDPOINT,
-  MATCH_ADMIN_ROUTE_ENDPOINT = ROUTER_ENDPOINTS.AUTH+ AUTHORIZED_ENDPOINTS.ADMIN_TEST_ROUTE
+  MATCH_ADMIN_ROUTE_ENDPOINT = ROUTER_ENDPOINTS.AUTH + AUTHORIZED_ENDPOINTS.ADMIN_TEST_ROUTE,
 }
 
 /**
@@ -104,7 +105,7 @@ export type PermissionConfigType = {
   authorizationUrl: PermissionObjectType;
   authRoot: PermissionObjectType;
   uploadMedias: PermissionObjectType;
-  admin: PermissionObjectType
+  admin: PermissionObjectType;
 };
 
 /**
@@ -129,7 +130,7 @@ export interface PostmanConfigType extends PermissionConfigType {
   authorizationUrl: PostmanObjectConfigType;
   authRoot: PostmanObjectConfigType;
   uploadMedias: PostmanObjectConfigType;
-  admin: PostmanObjectConfigType
+  admin: PostmanObjectConfigType;
 }
 
 /**
@@ -139,26 +140,24 @@ export interface BasicJsonResponse {
   message: string;
   success: boolean;
 }
+export interface GenericApiError<T = unknown> extends BasicJsonResponse {
+  error: T;
+}
 
 /**
  * Body payload for requesting Authorization token
  */
 export interface AuthorizationRequestPayload {
-  email: string;
+  username: string;
   password: string;
+  grant_type: GRANTS_AUTHORIZED_VALUES;
 }
 
-/**
- * Body of the reponse when successfully retrieving Authorization token
- */
-export interface AuthorizationRequestionSuccessReponse {
-  token: string;
-}
 /**
  * Body payload for Authorization token API reponse
  */
 export interface AuthorizationRequestResponse extends BasicJsonResponse {
-  data?: AuthorizationRequestionSuccessReponse;
+  data?: Token;
 }
 
 /**
@@ -187,8 +186,6 @@ export enum CONTENT_TYPES {
   KEY = 'Content-Type',
 }
 
-
 export interface ExpressOauthRouter extends Router {
   oauth: OAuth2Server;
-
 }
