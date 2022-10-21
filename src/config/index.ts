@@ -146,6 +146,12 @@ export const Multer = multer({
   },
 });
 
+export const DebugDatabaseUser:UsersSchema = {
+  username:"pedroetb",
+  hashed_password:"password",
+  role: [AUTHORIZED_ROLES.USER],
+}
+
 export const generateOauthExampleData = () => {
   const client1 = new ClientModelInstance<ClientsSchema>({
     id: 'application', // TODO: Needed by refresh_token grant, because there is a bug at line 103 in https://github.com/oauthjs/node-oauth2-server/blob/v3.0.1/lib/grant-types/refresh-token-grant-type.js (used client.id instead of client.clientId)
@@ -162,11 +168,7 @@ export const generateOauthExampleData = () => {
     redirectUris: [],
   });
 
-  const user = new UsersModelInstance<UsersSchema>({
-    username: 'pedroetb',
-    hashed_password: 'password',
-    role: [AUTHORIZED_ROLES.USER],
-  });
+  const user = new UsersModelInstance<UsersSchema>(DebugDatabaseUser);
   client1.save(function (err, client) {
     if (err) {
       return console.error(err);
@@ -267,12 +269,12 @@ export const postmanConfig: PostmanConfigType = {
     ...permissionConfig.authorizationUrl,
     isAuthRequired: false,
     requestInformation: {
-      postmanFormType: POSTMAN_FORM_TYPES.RAW,
+      postmanFormType: POSTMAN_FORM_TYPES.ENCODED,
       type: REQUEST_TYPES.POST,
       contentType: CONTENT_TYPES.URL_ENCODED,
       data: {
-        username: 'username',
-        password: 'pedroetb',
+        username: DebugDatabaseUser.username,
+        password: DebugDatabaseUser.hashed_password,
         grant_type:GRANTS_AUTHORIZED_VALUES.PASSWORD
       } as AuthorizationRequestPayload,
     },

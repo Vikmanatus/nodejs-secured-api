@@ -1,15 +1,18 @@
 import fs from 'fs';
-import { API_URL, postmanConfig, POSTMAN_PROJECT_NAME } from '@/config';
+import { API_URL, DebugDatabaseUser, postmanConfig, POSTMAN_PROJECT_NAME } from '@/config';
 import { Collection, Item, HeaderDefinition, RequestBodyDefinition } from 'postman-collection';
 import {
   CONTENT_TYPES,
+  DefaultUnkownObjectType,
   OverridePostmanFormDataInterface,
   PostmanObjectConfigType,
   PostmanRequestInformationType,
+  PostmanUrlEncodedObjectForm,
   POSTMAN_FORM_TYPES,
   REQUEST_TYPES,
   UploadMediaInterface,
 } from '@/types';
+import { GRANTS_AUTHORIZED_VALUES } from '@/types/models';
 
 const generateHeaders = (element: PostmanObjectConfigType): HeaderDefinition[] => {
   const headersArray: HeaderDefinition[] = [];
@@ -53,9 +56,14 @@ const generatePostmanBody = (element: PostmanObjectConfigType): RequestBodyDefin
     return requestBodyDef;
   }
   if (element.requestInformation.postmanFormType === POSTMAN_FORM_TYPES.ENCODED) {
+    const formData = element.requestInformation.data as DefaultUnkownObjectType;
+    const urlEncodedForm = [];
+    for (const key in formData) {
+      urlEncodedForm.push({ key: key, value: formData[key] } as PostmanUrlEncodedObjectForm);
+    }
     const requestBodyDef: RequestBodyDefinition = {
       mode: element.requestInformation.postmanFormType.toString(),
-      urlencoded: 'fake-url-encoded',
+      urlencoded: urlEncodedForm,
     };
     return requestBodyDef;
   }

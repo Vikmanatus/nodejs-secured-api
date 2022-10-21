@@ -1,4 +1,4 @@
-import {  Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import OAuth2Server, { Token } from 'oauth2-server';
 import { FormParamDefinition } from 'postman-collection';
 import { GRANTS_AUTHORIZED_VALUES } from './models';
@@ -189,3 +189,12 @@ export enum CONTENT_TYPES {
 export interface ExpressOauthRouter extends Router {
   oauth: OAuth2Server;
 }
+
+export type DefaultUnkownObjectType = {
+  [key: string]: unknown;
+};
+
+export type PostmanUrlEncodedObjectForm = {
+  key:string,
+  value:string
+};
