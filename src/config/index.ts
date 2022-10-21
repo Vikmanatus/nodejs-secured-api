@@ -44,21 +44,24 @@ export const DebugDatabaseUser: UsersSchema = {
   role: [AUTHORIZED_ROLES.USER],
 };
 
+export const DebugClient1: ClientsSchema = {
+  id: 'application', // TODO: Needed by refresh_token grant, because there is a bug at line 103 in https://github.com/oauthjs/node-oauth2-server/blob/v3.0.1/lib/grant-types/refresh-token-grant-type.js (used client.id instead of client.clientId)
+  clientId: 'application',
+  clientSecret: 'secret',
+  grants: [GRANTS_AUTHORIZED_VALUES.PASSWORD, GRANTS_AUTHORIZED_VALUES.REFRESH_TOKEN],
+  redirectUris: [],
+};
+export const DebugClient2: ClientsSchema = {
+  id: 'someId',
+  clientId: 'confidentialApplication',
+  clientSecret: 'topSecret',
+  grants: [GRANTS_AUTHORIZED_VALUES.PASSWORD, GRANTS_AUTHORIZED_VALUES.CLIENT_CREDENTIALS],
+  redirectUris: [],
+};
+
 export const generateOauthExampleData = () => {
-  const client1 = new ClientModelInstance<ClientsSchema>({
-    id: 'application', // TODO: Needed by refresh_token grant, because there is a bug at line 103 in https://github.com/oauthjs/node-oauth2-server/blob/v3.0.1/lib/grant-types/refresh-token-grant-type.js (used client.id instead of client.clientId)
-    clientId: 'application',
-    clientSecret: 'secret',
-    grants: [GRANTS_AUTHORIZED_VALUES.PASSWORD, GRANTS_AUTHORIZED_VALUES.REFRESH_TOKEN],
-    redirectUris: [],
-  });
-  const client2 = new ClientModelInstance<ClientsSchema>({
-    id: 'someId',
-    clientId: 'confidentialApplication',
-    clientSecret: 'topSecret',
-    grants: [GRANTS_AUTHORIZED_VALUES.PASSWORD, GRANTS_AUTHORIZED_VALUES.CLIENT_CREDENTIALS],
-    redirectUris: [],
-  });
+  const client1 = new ClientModelInstance<ClientsSchema>(DebugClient1);
+  const client2 = new ClientModelInstance<ClientsSchema>(DebugClient2);
 
   const user = new UsersModelInstance<UsersSchema>(DebugDatabaseUser);
   client1.save(function (err, client) {
@@ -171,6 +174,10 @@ export const postmanConfig: PostmanConfigType = {
       postmanFormType: POSTMAN_FORM_TYPES.ENCODED,
       type: REQUEST_TYPES.POST,
       contentType: CONTENT_TYPES.URL_ENCODED,
+      authorizationClientInfo: {
+        clientId: DebugClient1.clientId,
+        clientSecret: DebugClient1.clientSecret,
+      },
       data: {
         username: DebugDatabaseUser.username,
         password: DebugDatabaseUser.hashed_password,

@@ -99,7 +99,13 @@ export interface PostmanRequestInformationType<T = unknown> {
   postmanFormType: POSTMAN_FORM_TYPES;
   contentType?: CONTENT_TYPES;
   data?: T;
+  authorizationClientInfo?: AuthorizationClientInformation;
 }
+
+export type AuthorizationClientInformation = {
+  clientId: string;
+  clientSecret: string;
+};
 
 /**
  * This type defines the different values used in our permission config objects
@@ -218,7 +224,7 @@ export type PostmanUrlEncodedObjectForm = {
 
 /**
  * Interface added because of a definition issue of the ItemDefinition type in the postman-collection package
- * 
+ *
  * Link of the issue: https://github.com/postmanlabs/postman-collection/issues/1256
  */
 export interface OverridePostmanItemConfig extends ItemDefinition {

@@ -14,11 +14,21 @@ import {
   REQUEST_TYPES,
   UploadMediaInterface,
 } from '@/types';
+import { encodeToBase64 } from '../index';
 
 const generateHeaders = (element: PostmanObjectConfigType): HeaderDefinition[] => {
   const headersArray: HeaderDefinition[] = [];
   if (element.isAuthRequired) {
-    const header: HeaderDefinition = { key: 'Authorization', value: '' };
+    const header: HeaderDefinition = { key: 'Authorization', value: 'Bearer ' };
+    headersArray.push(header);
+  }
+  if (element.requestInformation.authorizationClientInfo) {
+    const authClientInformation = element.requestInformation.authorizationClientInfo;
+    const authClientValues = authClientInformation.clientId + ':' + authClientInformation.clientSecret;
+    const header: HeaderDefinition = {
+      key: 'Authorization',
+      value: 'Basic ' + encodeToBase64(authClientValues),
+    };
     headersArray.push(header);
   }
   if (element.requestInformation.type === REQUEST_TYPES.POST && element.requestInformation.contentType) {
@@ -73,8 +83,6 @@ const generatePostmanBody = (element: PostmanObjectConfigType): RequestBodyDefin
 
 const generatePostmanTests = (element: PostmanObjectConfigType): PostmanEventInterface[] => {
   if (element.event && element.event.length) {
-    console.log(element.event[0].listen);
-    console.log(element.event[0].script);
     return element.event;
   }
   return [];
@@ -92,7 +100,6 @@ export const generatePostmanCollection = (): void => {
   const postmanConfigObject: PostmanObjectConfigType[] = Object.values(postmanConfig);
 
   postmanConfigObject.map((element) => {
-    
     const postmanRequestBody: OverridePostmanItemConfig = {
       name: element.requestName,
       request: {
