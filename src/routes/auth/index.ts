@@ -1,4 +1,5 @@
-import { oauth, obtainToken, permissionConfig } from '@/config';
+import { oauth, permissionConfig } from '@/config';
+import { obtainToken } from '@/middlewares';
 import {
   AuthorizationRequestPayload,
   AuthorizationRequestResponse,
@@ -8,7 +9,6 @@ import {
   TypedResponse,
 } from '@/types';
 import express, { Request, Router } from 'express';
-import OAuth2Server from 'oauth2-server';
 
 const authRouter = express.Router() as ExpressOauthRouter;
 authRouter.oauth = oauth;
@@ -24,4 +24,11 @@ authRouter.get(permissionConfig.authRoot.url, (_req: Request, res: TypedResponse
  * Route to request token
  */
 authRouter.post(permissionConfig.authorizationUrl.url, obtainToken);
+
+authRouter.get(permissionConfig.admin.url, (req: Request, res: TypedResponse<BasicJsonResponse>) => {
+  return res.status(200).json({
+    message: 'You are an admin',
+    success: true,
+  });
+});
 export default authRouter;

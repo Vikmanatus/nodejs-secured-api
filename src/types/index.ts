@@ -27,6 +27,7 @@ export enum AUTHORIZED_ENDPOINTS {
   SIGNUP_ENDPOINT = '/signup',
   AUTHORIZATION_ENDPOINT = '/oauth/token',
   UPLOAD_MEDIAS_ENDPOINT = '/single-file/upload',
+  ADMIN_TEST_ROUTE="/welcome-admin"
 }
 
 /**
@@ -39,6 +40,7 @@ export enum MATCH_ENDPOINTS {
   MATCH_AUTHORIZATION_ENDPOINT = ROUTER_ENDPOINTS.AUTH + AUTHORIZED_ENDPOINTS.AUTHORIZATION_ENDPOINT,
   MATCH_AUTH_ROOT_ENDPOINT = ROUTER_ENDPOINTS.AUTH,
   MATCH_UPLOAD_MEDIAS_ENDPOINT = ROUTER_ENDPOINTS.MEDIAS + AUTHORIZED_ENDPOINTS.UPLOAD_MEDIAS_ENDPOINT,
+  MATCH_ADMIN_ROUTE_ENDPOINT = ROUTER_ENDPOINTS.AUTH+ AUTHORIZED_ENDPOINTS.ADMIN_TEST_ROUTE
 }
 
 /**
@@ -102,6 +104,7 @@ export type PermissionConfigType = {
   authorizationUrl: PermissionObjectType;
   authRoot: PermissionObjectType;
   uploadMedias: PermissionObjectType;
+  admin: PermissionObjectType
 };
 
 /**
@@ -126,6 +129,7 @@ export interface PostmanConfigType extends PermissionConfigType {
   authorizationUrl: PostmanObjectConfigType;
   authRoot: PostmanObjectConfigType;
   uploadMedias: PostmanObjectConfigType;
+  admin: PostmanObjectConfigType
 }
 
 /**

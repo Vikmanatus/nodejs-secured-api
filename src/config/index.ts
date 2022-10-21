@@ -13,7 +13,7 @@ import {
 } from '@/types';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import OAuth2Server, {  Falsey, Token, } from 'oauth2-server';
+import OAuth2Server, { Falsey, Token } from 'oauth2-server';
 import { TokenModelInstance } from '@/models/token.models';
 import { ClientModelInstance } from '@/models/clients.models';
 import { UsersModelInstance } from '@/models/users.models';
@@ -71,7 +71,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    getUser(username:string, _password:string) {
+    getUser(username: string, _password: string) {
       console.log('INSIDE getUser FUNC');
       return new Promise((resolve, reject) => {
         UsersModelInstance.findOne({ username })
@@ -83,7 +83,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    getUserFromClient(client:ClientsSchema) {
+    getUserFromClient(client: ClientsSchema) {
       console.log('INSIDE getUserFromClient FUNC');
 
       return new Promise((resolve, reject) => {
@@ -100,7 +100,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    getRefreshToken(refreshToken:string) {
+    getRefreshToken(refreshToken: string) {
       console.log('INSIDE getRefreshToken FUNC');
 
       return new Promise((resolve, reject) => {
@@ -113,7 +113,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    revokeToken(token:TokenSchema) {
+    revokeToken(token: TokenSchema) {
       console.log('INSIDE revokeToken FUNC');
 
       return new Promise((resolve, reject) => {
@@ -128,7 +128,7 @@ export const oauth = new OAuth2Server({
       });
     },
 
-    verifyScope(_token:TokenSchema, _scope) {
+    verifyScope(_token: TokenSchema, _scope) {
       console.log('INSIDE verifyScope FUNC');
 
       return Promise.resolve(true);
@@ -136,26 +136,7 @@ export const oauth = new OAuth2Server({
   },
 });
 
-export const obtainToken = (req: Request, res: Response, _next: NextFunction) => {
-  console.log('inside middleware');
-  const request = new OAuth2Server.Request(req);
-  const response = new OAuth2Server.Response(res);
-  return oauth
-    .token(request, response)
-    .then((result) => {
-      console.log({ result });
-      return res.status(201).json({
-        message: 'Successfully fetched token',
-        success: true,
-        data: result,
-      });
-    })
-    .catch((err) => {
-      console.log('Error obtaining token');
-      console.log({ err });
-      return err;
-    });
-};
+
 dotenv.config({
   path: '.env',
 });
@@ -262,6 +243,11 @@ export const permissionConfig: PermissionConfigType = {
     authorized_roles: [AUTHORIZED_ROLES.ADMIN, AUTHORIZED_ROLES.SUPER_ADMIN],
     matchUrl: MATCH_ENDPOINTS.MATCH_UPLOAD_MEDIAS_ENDPOINT,
   },
+  admin: {
+    url: AUTHORIZED_ENDPOINTS.ADMIN_TEST_ROUTE,
+    authorized_roles: [AUTHORIZED_ROLES.ADMIN],
+    matchUrl: MATCH_ENDPOINTS.MATCH_ADMIN_ROUTE_ENDPOINT,
+  },
 };
 
 /**
@@ -312,5 +298,14 @@ export const postmanConfig: PostmanConfigType = {
       } as UploadMediaInterface,
     },
     requestName: 'Upload picture to Google Cloud Storage',
+  },
+  admin: {
+    ...permissionConfig.admin,
+    isAuthRequired: true,
+    requestInformation: {
+      postmanFormType: POSTMAN_FORM_TYPES.NONE,
+      type: REQUEST_TYPES.GET,
+    },
+    requestName:"Checking if Admin role is working"
   },
 };
