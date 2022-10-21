@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { AUTHORIZED_ROLES } from '../index';
 
 export interface UsersSchema {
@@ -28,3 +29,7 @@ export interface TokenSchema {
   client: { id: string; grants: GRANTS_AUTHORIZED_VALUES[] };
   user: { username: string; role: AUTHORIZED_ROLES[] };
 }
+
+export type DbSearchResultType<T> = (mongoose.Document<unknown, unknown, T> & T & {
+  _id: mongoose.Types.ObjectId;
+}) | null

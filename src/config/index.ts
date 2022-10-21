@@ -13,18 +13,17 @@ import {
 } from '@/types';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import OAuth2Server, { Falsey, Token } from 'oauth2-server';
+import OAuth2Server, { Falsey } from 'oauth2-server';
 import { TokenModelInstance } from '@/models/token.models';
 import { ClientModelInstance } from '@/models/clients.models';
 import { UsersModelInstance } from '@/models/users.models';
-import { NextFunction, Request, Response } from 'express';
-import { ClientsSchema, GRANTS_AUTHORIZED_VALUES, TokenSchema, UsersSchema } from '@/types/models';
+import { ClientsSchema, DbSearchResultType, GRANTS_AUTHORIZED_VALUES, TokenSchema, UsersSchema } from '@/types/models';
 
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
   model: {
-    getAccessToken(accessToken): Promise<Token | Falsey> {
+    getAccessToken(accessToken): Promise<Falsey | DbSearchResultType<TokenSchema>> {
       console.log('INSIDE ACCESSTOKEN FUNC');
       return new Promise((resolve, reject) => {
         TokenModelInstance.findOne({ accessToken })
@@ -36,7 +35,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    getClient(clientId: string, clientSecret: string) {
+    getClient(clientId: string, clientSecret: string): Promise<Falsey | DbSearchResultType<ClientsSchema>> {
       console.log('INSIDE getClient FUNC');
       return new Promise((resolve, reject) => {
         ClientModelInstance.findOne({ clientId, clientSecret })
@@ -48,7 +47,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    saveToken(token: TokenSchema, client, user: UsersSchema) {
+    saveToken(token: TokenSchema, client, user: UsersSchema): Promise<Falsey | DbSearchResultType<TokenSchema>> {
       console.log('INSIDE saveToken FUNC');
       token.client = {
         id: client.clientId,
@@ -63,7 +62,7 @@ export const oauth = new OAuth2Server({
         const tokenInstance = new TokenModelInstance<TokenSchema>(token);
         tokenInstance
           .save()
-          .then((result: TokenSchema) => {
+          .then((result) => {
             resolve(result);
           })
           .catch((err: mongoose.CallbackError) => {
@@ -71,7 +70,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    getUser(username: string, _password: string) {
+    getUser(username: string, _password: string): Promise<Falsey | DbSearchResultType<UsersSchema>> {
       console.log('INSIDE getUser FUNC');
       return new Promise((resolve, reject) => {
         UsersModelInstance.findOne({ username })
@@ -83,7 +82,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    getUserFromClient(client: ClientsSchema) {
+    getUserFromClient(client: ClientsSchema): Promise<Falsey | DbSearchResultType<ClientsSchema>> {
       console.log('INSIDE getUserFromClient FUNC');
 
       return new Promise((resolve, reject) => {
@@ -100,12 +99,12 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    getRefreshToken(refreshToken: string) {
+    getRefreshToken(refreshToken: string): Promise<Falsey | DbSearchResultType<TokenSchema>> {
       console.log('INSIDE getRefreshToken FUNC');
 
       return new Promise((resolve, reject) => {
         TokenModelInstance.findOne({ refreshToken: refreshToken })
-          .then((result) => {
+          .then((result: DbSearchResultType<TokenSchema>) => {
             resolve(result);
           })
           .catch((err: mongoose.CallbackError) => {
@@ -113,7 +112,7 @@ export const oauth = new OAuth2Server({
           });
       });
     },
-    revokeToken(token: TokenSchema) {
+    revokeToken(token: TokenSchema): Promise<boolean> {
       console.log('INSIDE revokeToken FUNC');
 
       return new Promise((resolve, reject) => {
@@ -135,7 +134,6 @@ export const oauth = new OAuth2Server({
     },
   },
 });
-
 
 dotenv.config({
   path: '.env',
@@ -306,6 +304,6 @@ export const postmanConfig: PostmanConfigType = {
       postmanFormType: POSTMAN_FORM_TYPES.NONE,
       type: REQUEST_TYPES.GET,
     },
-    requestName:"Checking if Admin role is working"
+    requestName: 'Checking if Admin role is working',
   },
 };
