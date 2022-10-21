@@ -147,13 +147,12 @@ export const permissionConfig: PermissionConfigType = {
  */
 export const POSTMAN_PROJECT_NAME = 'nodejs-secured-api';
 
-// const POSTMAN_AUTH_REQUIRED_TEST = `
-// const response_body = pm.response.json();
-// pm.environment.name="NodeJs Secured API - ENV variables";
-// pm.environment.set("ACCESS_TOKEN", response_body.data.accessToken);
-// pm.environment.set("REFRESH_TOKEN",response_body.data.refreshToken);
-// `;
-const POSTMAN_SCRIPT_TEST='pm.environment.set("REFRESH_TOKEN","test");'
+const POSTMAN_AUTH_REQUIRED_TEST = `
+const response_body = pm.response.json();
+pm.environment.name="NodeJs Secured API - ENV variables";
+pm.environment.set("ACCESS_TOKEN", response_body.data.accessToken);
+pm.environment.set("REFRESH_TOKEN",response_body.data.refreshToken);
+`;
 
 /**
  * The object used to manage the automatic configuration of our Postman collection file
@@ -179,7 +178,7 @@ export const postmanConfig: PostmanConfigType = {
       } as AuthorizationRequestPayload,
     },
     event: [
-      { listen: POSTMAN_EVENTS.TEST, script: { type: POSTMAN_SCRIPT_TYPES.JS, exec: [POSTMAN_SCRIPT_TEST] } },
+      { listen: POSTMAN_EVENTS.TEST, script: { type: POSTMAN_SCRIPT_TYPES.JS, exec: [POSTMAN_AUTH_REQUIRED_TEST] } },
     ],
     requestName: 'Obtain token',
   },

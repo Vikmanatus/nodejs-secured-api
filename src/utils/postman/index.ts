@@ -1,15 +1,11 @@
 import fs from 'fs';
 import { API_URL, postmanConfig, POSTMAN_PROJECT_NAME } from '@/config';
-import {
-  Collection,
-  Item,
-  HeaderDefinition,
-  RequestBodyDefinition,
-} from 'postman-collection';
+import { Collection, Item, HeaderDefinition, RequestBodyDefinition } from 'postman-collection';
 import {
   CONTENT_TYPES,
   DefaultUnkownObjectType,
   OverridePostmanFormDataInterface,
+  OverridePostmanItemConfig,
   PostmanEventInterface,
   PostmanObjectConfigType,
   PostmanRequestInformationType,
@@ -77,6 +73,8 @@ const generatePostmanBody = (element: PostmanObjectConfigType): RequestBodyDefin
 
 const generatePostmanTests = (element: PostmanObjectConfigType): PostmanEventInterface[] => {
   if (element.event && element.event.length) {
+    console.log(element.event[0].listen);
+    console.log(element.event[0].script);
     return element.event;
   }
   return [];
@@ -94,7 +92,8 @@ export const generatePostmanCollection = (): void => {
   const postmanConfigObject: PostmanObjectConfigType[] = Object.values(postmanConfig);
 
   postmanConfigObject.map((element) => {
-    const postmanRequest = new Item({
+    
+    const postmanRequestBody: OverridePostmanItemConfig = {
       name: element.requestName,
       request: {
         header: generateHeaders(element),
@@ -102,10 +101,11 @@ export const generatePostmanCollection = (): void => {
         method: element.requestInformation.type,
         body: generatePostmanBody(element),
       },
-      events: generatePostmanTests(element),
-    });
-    console.log({postmanRequest});
-    postmanCollection.items.add(postmanRequest);
+      event: generatePostmanTests(element),
+    };
+
+    const requestElement = new Item(postmanRequestBody);
+    postmanCollection.items.add(requestElement);
   });
 
   const collectionJSON = postmanCollection.toJSON();

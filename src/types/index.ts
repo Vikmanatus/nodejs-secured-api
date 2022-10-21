@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import OAuth2Server, { Token } from 'oauth2-server';
-import { EventDefinition, FormParamDefinition } from 'postman-collection';
+import { EventDefinition, FormParamDefinition, ItemDefinition } from 'postman-collection';
 import { GRANTS_AUTHORIZED_VALUES } from './models';
 
 /**
@@ -215,3 +215,12 @@ export type PostmanUrlEncodedObjectForm = {
   key: string;
   value: string;
 };
+
+/**
+ * Interface added because of a definition issue of the ItemDefinition type in the postman-collection package
+ * 
+ * Link of the issue: https://github.com/postmanlabs/postman-collection/issues/1256
+ */
+export interface OverridePostmanItemConfig extends ItemDefinition {
+  event?: PostmanEventInterface[];
+}
