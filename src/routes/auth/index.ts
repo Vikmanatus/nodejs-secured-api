@@ -22,7 +22,7 @@ authRouter.get(permissionConfig.authRoot.url, (_req: Request, res: TypedResponse
  */
 authRouter.post(permissionConfig.authorizationUrl.url, obtainToken);
 
-authRouter.get(permissionConfig.admin.url, (req: Request, res: TypedResponse<BasicJsonResponse>) => {
+authRouter.get(permissionConfig.admin.url, (_req: Request, res: TypedResponse<BasicJsonResponse>) => {
   return res.status(200).json({
     message: 'You are an admin',
     success: true,

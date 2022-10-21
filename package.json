@@ -10,7 +10,7 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
-    "generate-postman-collection": "ts-node-dev --no-notify build/src/scripts/generate.postman.collection.js"
+    "generate-postman-collection": "yarn build && ts-node-dev --no-notify build/src/scripts/generate.postman.collection.js"
   },
   "author": "Viktor Stoyanov",
   "license": "ISC",

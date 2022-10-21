@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { API_URL, DebugDatabaseUser, postmanConfig, POSTMAN_PROJECT_NAME } from '@/config';
+import { API_URL, postmanConfig, POSTMAN_PROJECT_NAME } from '@/config';
 import { Collection, Item, HeaderDefinition, RequestBodyDefinition } from 'postman-collection';
 import {
   CONTENT_TYPES,
@@ -12,7 +12,6 @@ import {
   REQUEST_TYPES,
   UploadMediaInterface,
 } from '@/types';
-import { GRANTS_AUTHORIZED_VALUES } from '@/types/models';
 
 const generateHeaders = (element: PostmanObjectConfigType): HeaderDefinition[] => {
   const headersArray: HeaderDefinition[] = [];
