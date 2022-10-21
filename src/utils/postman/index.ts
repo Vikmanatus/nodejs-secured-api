@@ -1,10 +1,16 @@
 import fs from 'fs';
 import { API_URL, postmanConfig, POSTMAN_PROJECT_NAME } from '@/config';
-import { Collection, Item, HeaderDefinition, RequestBodyDefinition } from 'postman-collection';
+import {
+  Collection,
+  Item,
+  HeaderDefinition,
+  RequestBodyDefinition,
+} from 'postman-collection';
 import {
   CONTENT_TYPES,
   DefaultUnkownObjectType,
   OverridePostmanFormDataInterface,
+  PostmanEventInterface,
   PostmanObjectConfigType,
   PostmanRequestInformationType,
   PostmanUrlEncodedObjectForm,
@@ -68,6 +74,13 @@ const generatePostmanBody = (element: PostmanObjectConfigType): RequestBodyDefin
   }
   return {} as RequestBodyDefinition;
 };
+
+const generatePostmanTests = (element: PostmanObjectConfigType): PostmanEventInterface[] => {
+  if (element.event && element.event.length) {
+    return element.event;
+  }
+  return [];
+};
 export const generatePostmanCollection = (): void => {
   const postmanCollection = new Collection({
     info: {
@@ -89,7 +102,9 @@ export const generatePostmanCollection = (): void => {
         method: element.requestInformation.type,
         body: generatePostmanBody(element),
       },
+      events: generatePostmanTests(element),
     });
+    console.log({postmanRequest});
     postmanCollection.items.add(postmanRequest);
   });
 

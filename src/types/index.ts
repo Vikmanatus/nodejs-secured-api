@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import OAuth2Server, { Token } from 'oauth2-server';
-import { FormParamDefinition } from 'postman-collection';
+import { EventDefinition, FormParamDefinition } from 'postman-collection';
 import { GRANTS_AUTHORIZED_VALUES } from './models';
 
 /**
@@ -64,15 +64,31 @@ export enum POSTMAN_FORM_TYPES {
   FILE = 'file',
 }
 
+export enum POSTMAN_EVENTS {
+  TEST = 'test',
+}
+
+export enum POSTMAN_SCRIPT_TYPES {
+  JS = 'text/javascript',
+}
 export interface UploadMediaInterface {
   requestKey: string;
   relativeFilePath: string;
 }
 
+export interface PostmanScriptsInterface {
+  type: POSTMAN_SCRIPT_TYPES;
+  exec: string[];
+}
 export interface OverridePostmanFormDataInterface extends FormParamDefinition {
   key: string;
   type: POSTMAN_FORM_TYPES;
   src: string;
+}
+
+export interface PostmanEventInterface extends EventDefinition {
+  listen: POSTMAN_EVENTS;
+  script: PostmanScriptsInterface;
 }
 /**
  * Type used to define what request types and which postman form type string is required for the automatic postman collection configuration
@@ -115,6 +131,7 @@ export type PostmanAddtionalConfigObjectType = {
   isAuthRequired: boolean;
   requestInformation: PostmanRequestInformationType;
   requestName: string;
+  event?: PostmanEventInterface[];
 };
 
 /**
@@ -195,6 +212,6 @@ export type DefaultUnkownObjectType = {
 };
 
 export type PostmanUrlEncodedObjectForm = {
-  key:string,
-  value:string
+  key: string;
+  value: string;
 };

@@ -7,7 +7,9 @@ import {
   MATCH_ENDPOINTS,
   PermissionConfigType,
   PostmanConfigType,
+  POSTMAN_EVENTS,
   POSTMAN_FORM_TYPES,
+  POSTMAN_SCRIPT_TYPES,
   REQUEST_TYPES,
   UploadMediaInterface,
 } from '@/types';
@@ -19,11 +21,10 @@ import { UsersModelInstance } from '@/models/users.models';
 import { ClientsSchema, GRANTS_AUTHORIZED_VALUES, UsersSchema } from '@/types/models';
 import { oauthModel } from '@/oauth';
 
-
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
-  model: oauthModel
+  model: oauthModel,
 });
 
 dotenv.config({
@@ -146,6 +147,14 @@ export const permissionConfig: PermissionConfigType = {
  */
 export const POSTMAN_PROJECT_NAME = 'nodejs-secured-api';
 
+// const POSTMAN_AUTH_REQUIRED_TEST = `
+// const response_body = pm.response.json();
+// pm.environment.name="NodeJs Secured API - ENV variables";
+// pm.environment.set("ACCESS_TOKEN", response_body.data.accessToken);
+// pm.environment.set("REFRESH_TOKEN",response_body.data.refreshToken);
+// `;
+const POSTMAN_SCRIPT_TEST='pm.environment.set("REFRESH_TOKEN","test");'
+
 /**
  * The object used to manage the automatic configuration of our Postman collection file
  */
@@ -169,6 +178,9 @@ export const postmanConfig: PostmanConfigType = {
         grant_type: GRANTS_AUTHORIZED_VALUES.PASSWORD,
       } as AuthorizationRequestPayload,
     },
+    event: [
+      { listen: POSTMAN_EVENTS.TEST, script: { type: POSTMAN_SCRIPT_TYPES.JS, exec: [POSTMAN_SCRIPT_TEST] } },
+    ],
     requestName: 'Obtain token',
   },
   authRoot: {
