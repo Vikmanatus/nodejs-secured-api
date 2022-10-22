@@ -19,7 +19,7 @@ import { encodeToBase64 } from '../index';
 const generateHeaders = (element: PostmanObjectConfigType): HeaderDefinition[] => {
   const headersArray: HeaderDefinition[] = [];
   if (element.isAuthRequired) {
-    const header: HeaderDefinition = { key: 'Authorization', value: 'Bearer ' };
+    const header: HeaderDefinition = { key: 'Authorization', value: 'Bearer {{ACCESS_TOKEN}}' };
     headersArray.push(header);
   }
   if (element.requestInformation.authorizationClientInfo) {
