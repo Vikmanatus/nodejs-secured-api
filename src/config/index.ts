@@ -24,7 +24,10 @@ import { oauthModel } from '@/oauth';
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
-  model: oauthModel,
+  model: {...oauthModel,validateScope(user, client, scope, callback) {
+    console.log("INSIDE VALIDATE SCOPE");
+    return Promise.resolve("test")
+  },},
 });
 
 dotenv.config({
