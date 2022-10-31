@@ -12,6 +12,7 @@ export enum GRANTS_AUTHORIZED_VALUES {
   PASSWORD = 'password',
   CLIENT_CREDENTIALS = 'client_credentials',
   REFRESH_TOKEN = 'refresh_token',
+  AUTH_CODE = 'authorization_code',
 }
 
 export interface ClientsSchema {
@@ -27,14 +28,17 @@ export interface TokenSchema {
   accessTokenExpiresAt: Date;
   refreshToken: string;
   refreshTokenExpiresAt: Date;
-  scope?: string[]
+  scope?: string[];
   client: { id: string; grants: GRANTS_AUTHORIZED_VALUES[] };
   user: { username: string; role: AUTHORIZED_ROLES[] };
 }
 
-export type DbSearchResultType<T> = (mongoose.Document<unknown, unknown, T> & T & {
-  _id: mongoose.Types.ObjectId;
-}) | null
+export type DbSearchResultType<T> =
+  | (mongoose.Document<unknown, unknown, T> &
+      T & {
+        _id: mongoose.Types.ObjectId;
+      })
+  | null;
 
 export type OauthFunctionsModel = {
   getAccessToken: (accessToken: string) => Promise<Falsey | DbSearchResultType<TokenSchema>>;
