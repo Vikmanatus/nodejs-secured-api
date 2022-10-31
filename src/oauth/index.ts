@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import { Falsey } from 'oauth2-server';
 
 export const oauthModel: OauthFunctionsModel = {
-  getAccessToken(accessToken): Promise<Falsey | DbSearchResultType<TokenSchema>> {
+  getAccessToken(accessToken:string): Promise<Falsey | DbSearchResultType<TokenSchema>> {
     console.log('INSIDE ACCESSTOKEN FUNC');
     return new Promise((resolve, reject) => {
       TokenModelInstance.findOne({ accessToken })

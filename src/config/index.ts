@@ -24,10 +24,29 @@ import { oauthModel } from '@/oauth';
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
-  model: {...oauthModel,validateScope(user, client, scope, callback) {
-    console.log("INSIDE VALIDATE SCOPE");
-    return Promise.resolve("test")
-  },},
+  model: {
+    ...oauthModel,
+    validateScope(user, client, scope: string) {
+      const VALID_SCOPES = ['READ', 'WRITE'];
+
+      // const formattedScope = scope.split(',')
+
+      console.log('INSIDE VALIDATE SCOPE');
+      console.log({user});
+      console.log({client});
+      console.log({scope});
+      // return Promise.resolve(scope);
+      if (!scope.split(',').every((s) => VALID_SCOPES.indexOf(s) >= 0)) {
+        return Promise.reject(false);
+      }
+      console.log("should resolve");
+      return Promise.resolve(scope);
+    },
+    verifyScope(token, scope, callback) {
+      console.log("iniside verify scope");
+      return Promise.resolve(true)
+    },
+  },
 });
 
 dotenv.config({

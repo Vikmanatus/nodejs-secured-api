@@ -11,6 +11,7 @@ export const TokenSchemaInstance = new mongoose.Schema<TokenSchema>({
   refreshTokenExpiresAt: { type: Date },
   client: { id: { type: String }, grants: [{ type: String, enum: Object.values(GRANTS_AUTHORIZED_VALUES) }] },
   user: { username: { type: String }, role: [{ type: String, enum: Object.values(AUTHORIZED_ROLES) }] },
+  scope: [{ type: String }],
 });
 
 TokenSchemaInstance.index({ refreshTokenExpiresAt: 1 }, { expireAfterSeconds: 0 });
