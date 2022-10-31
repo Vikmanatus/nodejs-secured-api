@@ -1,16 +1,24 @@
 import { ClientModelInstance } from '@/models/clients.models';
 import { TokenModelInstance } from '@/models/token.models';
 import { UsersModelInstance } from '@/models/users.models';
-import { ClientsSchema, DbSearchResultType, GRANTS_AUTHORIZED_VALUES, OauthFunctionsModel, TokenSchema, UsersSchema } from '@/types/models';
+import {
+  ClientsSchema,
+  DbSearchResultType,
+  GRANTS_AUTHORIZED_VALUES,
+  OauthFunctionsModel,
+  TokenSchema,
+  UsersSchema,
+} from '@/types/models';
 import mongoose from 'mongoose';
 import { Falsey } from 'oauth2-server';
 
 export const oauthModel: OauthFunctionsModel = {
-  getAccessToken(accessToken:string): Promise<Falsey | DbSearchResultType<TokenSchema>> {
+  getAccessToken(accessToken: string): Promise<Falsey | DbSearchResultType<TokenSchema>> {
     console.log('INSIDE ACCESSTOKEN FUNC');
     return new Promise((resolve, reject) => {
       TokenModelInstance.findOne({ accessToken })
         .then((result) => {
+          console.log({ result });
           resolve(result);
         })
         .catch((err: mongoose.CallbackError) => {
@@ -114,9 +122,18 @@ export const oauthModel: OauthFunctionsModel = {
     });
   },
 
-  verifyScope(_token: TokenSchema, _scope: string | string[]): Promise<boolean> {
+  verifyScope(token: TokenSchema, scope: string): Promise<boolean> {
+    const tokenScope = token.scope;
+    if (!tokenScope) {
+      return Promise.reject(false);
+    }
     console.log('INSIDE verifyScope FUNC');
+    console.log({scope});
+    const isScopeValid = tokenScope.filter((element) => element === scope);
 
-    return Promise.resolve(true);
+    if (isScopeValid.length) {
+      return Promise.resolve(true);
+    }
+    return Promise.resolve(false);
   },
 };

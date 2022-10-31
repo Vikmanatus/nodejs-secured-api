@@ -1,13 +1,9 @@
 import { oauth } from '@/config';
 import { AuthorizationRequestResponse, GenericApiError, TypedResponse } from '@/types';
 import { NextFunction, Request, Response } from 'express';
-import OAuth2Server from 'oauth2-server';
+import OAuth2Server, { AuthenticateOptions } from 'oauth2-server';
 
-export const obtainToken = (
-  req: Request,
-  res: TypedResponse<AuthorizationRequestResponse | GenericApiError>,
-  _next: NextFunction,
-) => {
+export const obtainToken = (req: Request, res: TypedResponse<AuthorizationRequestResponse | GenericApiError>) => {
   console.log('inside middleware');
   const request = new OAuth2Server.Request(req);
   const response = new OAuth2Server.Response(res);
@@ -35,11 +31,13 @@ export const obtainToken = (
 export const authenticateRequest = (req: Request, res: Response, next: NextFunction) => {
   const request = new OAuth2Server.Request(req);
   const response = new OAuth2Server.Response(res);
+  const authOptions:AuthenticateOptions = {scope: req.headers.scope || undefined}
+  console.log({authOptions});
   return oauth
-    .authenticate(request, response)
+    .authenticate(request, response, authOptions)
     .then((result) => {
-      console.log("Request successfully auth");
-      console.log({result});
+      console.log('Request successfully auth');
+      console.log({ result });
       res.locals.oauth = { token: result };
       next();
     })
