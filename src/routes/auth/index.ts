@@ -1,5 +1,5 @@
 import { oauth, permissionConfig } from '@/config';
-import { authenticateRequest, obtainToken } from '@/middlewares';
+import { authenticateRequest, authorizeRequest, obtainToken } from '@/middlewares';
 import { BasicJsonResponse, ExpressOauthRouter, TypedResponse } from '@/types';
 import express, { Request } from 'express';
 
@@ -16,7 +16,7 @@ authRouter.get(permissionConfig.authRoot.url, (_req: Request, res: TypedResponse
 /**
  * Route to request token
  */
-authRouter.post(permissionConfig.authorizationUrl.url, obtainToken);
+authRouter.post(permissionConfig.authorizationUrl.url, authorizeRequest);
 
 authRouter.get(
   permissionConfig.admin.url,

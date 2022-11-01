@@ -15,6 +15,7 @@ import { Falsey } from 'oauth2-server';
 export const oauthModel: OauthFunctionsModel = {
   getAccessToken(accessToken: string): Promise<Falsey | DbSearchResultType<TokenSchema>> {
     console.log('INSIDE ACCESSTOKEN FUNC');
+    console.log({accessToken});
     return new Promise((resolve, reject) => {
       TokenModelInstance.findOne({ accessToken })
         .then((result) => {
@@ -28,8 +29,10 @@ export const oauthModel: OauthFunctionsModel = {
   },
   getClient(clientId: string, clientSecret: string): Promise<Falsey | DbSearchResultType<ClientsSchema>> {
     console.log('INSIDE getClient FUNC');
+    console.log({clientId});
+    console.log({clientSecret});
     return new Promise((resolve, reject) => {
-      ClientModelInstance.findOne({ clientId, clientSecret })
+      ClientModelInstance.findOne({ clientId })
         .then((result) => {
           resolve(result);
         })

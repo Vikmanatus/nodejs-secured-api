@@ -18,8 +18,9 @@ import mongoose from 'mongoose';
 import OAuth2Server from 'oauth2-server';
 import { ClientModelInstance } from '@/models/clients.models';
 import { UsersModelInstance } from '@/models/users.models';
-import { ClientsSchema, GRANTS_AUTHORIZED_VALUES, UsersSchema } from '@/types/models';
+import { ClientsSchema, GRANTS_AUTHORIZED_VALUES, UsersSchema, AuthorizationCodeSchema } from '@/types/models';
 import { oauthModel } from '@/oauth';
+import { AuthorizationCodeModelInstance } from '@/models/authorization_code.models';
 
 export const VALID_SCOPES = ['READ', 'WRITE'];
 export const oauth = new OAuth2Server({
@@ -40,6 +41,56 @@ export const oauth = new OAuth2Server({
       }
       console.log('should resolve');
       return Promise.resolve(scope);
+    },
+    saveAuthorizationCode(code: AuthorizationCodeSchema, client: ClientsSchema, user: UsersSchema) {
+      console.log('inside saveAuthorizationCode');
+      code.client = {
+        id: client.id,
+        grants: client.grants as GRANTS_AUTHORIZED_VALUES[],
+      };
+      code.user = {
+        username: user.username,
+        role: user.role,
+      };
+      return new Promise((resolve, reject) => {
+        const authorizationCodeInstance = new AuthorizationCodeModelInstance<AuthorizationCodeSchema>(code);
+        authorizationCodeInstance
+          .save()
+          .then((result) => {
+            resolve(result);
+          })
+          .catch((err: mongoose.CallbackError) => {
+            reject(err);
+          });
+      });
+    },
+    getAuthorizationCode(authorizationCode: string) {
+      console.log('inside getAuthorizationCode');
+      console.log({ authorizationCode });
+      return new Promise((resolve, reject) => {
+        AuthorizationCodeModelInstance.findOne({ authorizationCode })
+          .then((result) => {
+            console.log({ result });
+            resolve(result);
+          })
+          .catch((err: mongoose.CallbackError) => {
+            reject(err);
+          });
+      });
+    },
+    revokeAuthorizationCode(code) {
+      console.log('inside revokeAuthorizationCode');
+
+      return new Promise((resolve, reject) => {
+        AuthorizationCodeModelInstance.deleteOne({ authorizationCode: code.authorizationCode })
+          .then((result) => {
+            console.log({ result });
+            resolve(true);
+          })
+          .catch((err: mongoose.CallbackError) => {
+            reject(err);
+          });
+      });
     },
   },
 });

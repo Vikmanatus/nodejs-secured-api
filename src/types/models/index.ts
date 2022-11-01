@@ -23,14 +23,30 @@ export interface ClientsSchema {
   redirectUris: string[];
 }
 
+export interface AuthorizationCodeSchema {
+  authorizationCode: string;
+  expiresAt: Date;
+  redirectUri: string;
+  scope?: string[];
+  client: TokenClientInfo;
+  user: TokenUserInfo;
+}
+export interface TokenUserInfo {
+  username: string;
+  role: AUTHORIZED_ROLES[];
+}
+export interface TokenClientInfo {
+  id: string;
+  grants: GRANTS_AUTHORIZED_VALUES[];
+}
 export interface TokenSchema {
   accessToken: string;
   accessTokenExpiresAt: Date;
   refreshToken: string;
   refreshTokenExpiresAt: Date;
   scope?: string[];
-  client: { id: string; grants: GRANTS_AUTHORIZED_VALUES[] };
-  user: { username: string; role: AUTHORIZED_ROLES[] };
+  client: TokenClientInfo;
+  user: TokenUserInfo;
 }
 
 export type DbSearchResultType<T> =
