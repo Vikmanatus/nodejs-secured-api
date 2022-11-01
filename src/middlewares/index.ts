@@ -1,8 +1,10 @@
 import { oauth } from '@/config';
 import { AuthorizationRequestResponse, GenericApiError, TypedResponse } from '@/types';
 import { UsersSchema } from '@/types/models';
+import { getUser } from '@/utils/db';
 import { NextFunction, Request, Response } from 'express';
-import OAuth2Server, { AuthenticateOptions } from 'oauth2-server';
+import mongoose from 'mongoose';
+import OAuth2Server, { AuthenticateOptions, User } from 'oauth2-server';
 
 export const obtainToken = (req: Request, res: TypedResponse<AuthorizationRequestResponse | GenericApiError>) => {
   console.log('inside middleware');
@@ -31,17 +33,32 @@ export const obtainToken = (req: Request, res: TypedResponse<AuthorizationReques
 export const authorizeRequest = (req: Request, res: Response) => {
   const request = new OAuth2Server.Request(req);
   const response = new OAuth2Server.Response(res);
-  if(request.query){
-    request.query.allowed = "true"
-  }
+  // if(request.query){
+  //   request.query.allowed = "true"
+  // }
+  console.log({ parmas: req.params });
+  console.log({ query: req.query });
   return oauth
-    .authorize(request, response,{authenticateHandler:{
-      handle: function(request, response) {
-        return {} as UsersSchema/* get authenticated user */;
-      }
-    }})
+    .authorize(request, response, {
+      allowEmptyState: true,
+      authenticateHandler: {
+        handle: function (request: OAuth2Server.Request, response: OAuth2Server.Response) {
+          console.log('inside handler');
+          console.log({ username: request.query?.username });
+          return getUser(request.query?.username || '')
+            .then((result) => {
+              console.log({ result });
+              return result as UsersSchema;
+            })
+            .catch((err: mongoose.CallbackError) => {
+              console.log('error get user handler');
+              return false;
+            });
+        },
+      },
+    })
     .then((result) => {
-      console.log({ result_authorize:result });
+      console.log({ result_authorize: result });
       return res.status(201).json({
         message: 'Successfully fetched authorization code',
         success: true,
@@ -50,7 +67,6 @@ export const authorizeRequest = (req: Request, res: Response) => {
     })
     .catch((err) => {
       console.log('Error obtaining authorization code');
-      console.log({ err });
       return res.status(500).json({
         message: 'An error occured',
         success: false,

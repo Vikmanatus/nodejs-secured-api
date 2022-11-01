@@ -36,7 +36,7 @@ export const oauth = new OAuth2Server({
       console.log({ client });
       console.log({ scope });
       // return Promise.resolve(scope);
-      if (!scope.split(',').every((s) => VALID_SCOPES.indexOf(s) >= 0)) {
+      if (!scope || !scope.split(',').every((s) => VALID_SCOPES.indexOf(s) >= 0)) {
         return Promise.reject(false);
       }
       console.log('should resolve');
@@ -48,6 +48,7 @@ export const oauth = new OAuth2Server({
         id: client.id,
         grants: client.grants as GRANTS_AUTHORIZED_VALUES[],
       };
+      console.log({ user });
       code.user = {
         username: user.username,
         role: user.role,
