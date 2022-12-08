@@ -55,3 +55,5 @@ You simply have to import it in the Postman application, and then you will be re
 - [Used to fixed development config](https://stackoverflow.com/questions/62092769/ts-node-dev-doesnt-apply-changes-in-auto-reload)
 
 - [Used to generate Postman connection automatically](https://siddharth-lakhara.medium.com/generate-postman-collections-using-node-js-68fcf425d823)
+
+- [Used for `oauth2-server` basic implementation](https://blog.logrocket.com/implement-oauth-2-0-node-js/)

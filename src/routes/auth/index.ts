@@ -16,7 +16,7 @@ authRouter.get(permissionConfig.authRoot.url, (_req: Request, res: TypedResponse
 /**
  * Route to request token
  */
-authRouter.get(permissionConfig.authorizationUrl.url, authorizeRequest);
+authRouter.post(permissionConfig.authorizationUrl.url, authorizeRequest);
 
 authRouter.get("/oauth/success",(req,res)=>{
   res.redirect()

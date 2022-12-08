@@ -26,6 +26,11 @@ export const VALID_SCOPES = ['READ', 'WRITE'];
 export const oauth = new OAuth2Server({
   accessTokenLifetime: 180,
   allowBearerTokensInQueryString: true,
+  allowEmptyState:false,
+  addAcceptedScopesHeader:true,
+  addAuthorizedScopesHeader:true,
+  authorizationCodeLifetime:60,
+  alwaysIssueNewRefreshToken:true,
   model: {
     ...oauthModel,
     validateScope(user, client, scope: string) {
