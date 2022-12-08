@@ -1,26 +1,21 @@
-import express from 'express';
-import morgan from 'morgan';
-import { PORT } from './config';
+import http from 'http';
+import expressApp from './app';
 
-const app = express();
+import { connectDb, PORT } from '@/config';
 
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+/**
+ * Creating HTTP server
+ */
+const server = http.createServer(expressApp);
 
-app.get('/', (_req, res) => {
-  res.status(200).json({ message: 'Welcolme to nodejs-secured-api', success: true });
-});
-
-
-console.log({PORT});
-app.use((_req, res) => {
-  res.status(404).json({
-    success: false,
-    msg: 'Page not founded',
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+  connectDb()
+    .then((result) => {
+      //generateOauthExampleData()
+      console.log(result);
+    })
+    .catch((err) => {
+      throw Error('Error with database connection' + err);
+    });
 });
