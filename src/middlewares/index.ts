@@ -4,7 +4,7 @@ import { UsersSchema } from '@/types/models';
 import { getUser } from '@/utils/db';
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
-import OAuth2Server, { AuthenticateOptions, User } from 'oauth2-server';
+import OAuth2Server, { AuthenticateOptions } from 'oauth2-server';
 
 export const obtainToken = (req: Request, res: TypedResponse<AuthorizationRequestResponse | GenericApiError>) => {
   console.log('inside middleware');
@@ -42,7 +42,7 @@ export const authorizeRequest = (req: Request, res: Response) => {
     .authorize(request, response, {
       allowEmptyState: true,
       authenticateHandler: {
-        handle: function (request: OAuth2Server.Request, response: OAuth2Server.Response) {
+        handle: function (request: OAuth2Server.Request, _response: OAuth2Server.Response) {
           console.log('inside handler');
           console.log({ username: request.query?.username });
           return getUser(request.query?.username || '')
@@ -50,7 +50,7 @@ export const authorizeRequest = (req: Request, res: Response) => {
               console.log({ result });
               return result as UsersSchema;
             })
-            .catch((err: mongoose.CallbackError) => {
+            .catch((_err: mongoose.CallbackError) => {
               console.log('error get user handler');
               return false;
             });
